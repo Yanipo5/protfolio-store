@@ -1,7 +1,7 @@
 import { createTRPCClient } from "@trpc/client";
 import superjson from "superjson";
 import { httpLink } from "@trpc/client/links/httpLink";
-import type { AppRouter } from "full-stack-server/src/routes/trpc/routerType";
+import type { AppRouter } from "portfolio-storeserver/src/routes/trpc/routerType";
 
 export const api = createTRPCClient<AppRouter>({
   transformer: superjson,

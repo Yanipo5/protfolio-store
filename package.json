@@ -1,5 +1,5 @@
 {
-  "name": "full-stack-starter",
+  "name": "portfolio-store",
   "description": "Full stack template based in (server) prisma + trpc and (client) vue + pinia + element-plus",
   "version": "0.0.1",
   "author": "Yaniv Peretz",
@@ -16,7 +16,7 @@
     "dev-client": "npm --prefix client run dev",
     "dev-server": "npm --prefix server run dev",
     "compose": "docker-compose up",
-    "init": "npm ci --workspaces",
+    "init": "npm i --workspaces",
     "_____DOCKER_____": "",
     "docker-build": "sh docker.build.sh",
     "docker-run-locally": "docker run -p 8080:8080 --env-file .env.docker %npm_package_name%:%npm_package_version%",

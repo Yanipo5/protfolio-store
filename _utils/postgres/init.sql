@@ -1,1 +1,1 @@
-CREATE SCHEMA "full-stack-starter";
+CREATE SCHEMA "portfolio-store";
