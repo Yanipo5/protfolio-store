@@ -1,0 +1,47 @@
+@startuml Order End To End
+title Order End To End
+scale 2
+autonumber
+!theme plain
+
+database DB #LightYellow
+participant API #LightYellow
+actor Admin #LightYellow
+actor User #LightYellow
+
+== Admin Adds Product ==
+Admin -> API ++: admin.product.add(price, inventory, imageUrl)
+API <-> DB: prisma.product.create
+Admin <- API --: product
+Admin -> API ++: admin.product.edit(price, inventory, imageUrl)
+API <-> DB: prisma.product.create
+Admin <- API --: product
+== User Sign Up ==
+User -> API ++: user.signUp(email,psw)
+API <-> DB: prisma.user.create
+User <- API --: token
+User -> API ++: user.login(email,psw)
+API <-> DB: prisma.user.create
+User <- API --: token
+== User Create Order ==
+User -> API ++: user.product.getAll
+API -> DB: prisma.product.fetchAll
+User <- API --: products
+User -> User : addProductToCart
+User -> User : selectCartCoupon
+User -> API ++ : user.order.create(token, products, coupon)
+API <-> DB : prisma.order.create
+User <- API -- : order(id,status = pending)
+== Admin Complete Order ==
+Admin -> API ++: admin.order.getAll
+API <-> DB: prisma.order.fetchAll
+Admin <- API --: orders
+Admin -> API ++: admin.order.update(id, status = complete)
+API <-> DB: prisma.order.update
+Admin <- API --: editOrder(id, status = complete)
+== User See Orders Status ==
+User -> API ++: user.order.getAll
+API <-> DB: prisma.order.fetchAll(token.userid)
+User <- API --: orders
+@enduml
+

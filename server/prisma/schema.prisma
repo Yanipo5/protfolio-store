@@ -7,11 +7,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Person {
+model User {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
+  name      String?
+  email     String
+  password  String
 }
 
 model Product {
@@ -19,6 +21,7 @@ model Product {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   title       String
+  image       String
   inventory   Int
   price       Float
   comment     String?
