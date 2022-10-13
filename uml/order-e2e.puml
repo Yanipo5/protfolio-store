@@ -10,23 +10,28 @@ actor Admin #LightYellow
 actor User #LightYellow
 
 == Admin Adds Product ==
+Admin -> API ++ : admin.product.login(user, password)
+Admin <- API -- : token
 Admin -> API ++: admin.product.add(price, inventory, imageUrl)
 API <-> DB: prisma.product.create
 Admin <- API --: product
+Admin -> API ++: admin.product.getAll
+API <-> DB: prisma.product.fetchAll
+Admin <- API --: product[]
 Admin -> API ++: admin.product.edit(price, inventory, imageUrl)
-API <-> DB: prisma.product.create
+API <-> DB: prisma.product.update
 Admin <- API --: product
 == User Sign Up ==
 User -> API ++: user.signUp(email,psw)
 API <-> DB: prisma.user.create
 User <- API --: token
 User -> API ++: user.login(email,psw)
-API <-> DB: prisma.user.create
+API <-> DB: prisma.user.findFirst
 User <- API --: token
 == User Create Order ==
 User -> API ++: user.product.getAll
 API -> DB: prisma.product.fetchAll
-User <- API --: products
+User <- API --: product[]
 User -> User : addProductToCart
 User -> User : selectCartCoupon
 User -> API ++ : user.order.create(token, products, coupon)
@@ -35,13 +40,13 @@ User <- API -- : order(id,status = pending)
 == Admin Complete Order ==
 Admin -> API ++: admin.order.getAll
 API <-> DB: prisma.order.fetchAll
-Admin <- API --: orders
+Admin <- API --: order[]
 Admin -> API ++: admin.order.update(id, status = complete)
 API <-> DB: prisma.order.update
 Admin <- API --: editOrder(id, status = complete)
 == User See Orders Status ==
 User -> API ++: user.order.getAll
 API <-> DB: prisma.order.fetchAll(token.userid)
-User <- API --: orders
+User <- API --: order[]
 @enduml
 

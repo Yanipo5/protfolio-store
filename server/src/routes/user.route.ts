@@ -31,13 +31,13 @@ export default createRouter()
     input: z.object({ email: z.string(), password: z.string() }),
     async resolve(context) {
       const { email, password } = context.input;
-      return prisma.user.create({ data: { email, password } });
+      return prisma.user.create({ data: { email, password_hash: password } });
     }
   })
   .query("login", {
     input: z.object({ email: z.string(), password: z.string() }),
     async resolve(context) {
       const { email, password } = context.input;
-      return prisma.user.findFirst({ where: { email, password } });
+      return prisma.user.findFirst({ where: { email, password_hash: password } });
     }
   });
