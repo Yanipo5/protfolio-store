@@ -14,6 +14,7 @@ model User {
   name            String?
   email           String   @unique
   password_hash   String
+  orders          Order[]
 }
 
 model Product {
@@ -25,26 +26,27 @@ model Product {
   inventory   Int
   price       Float
   comment     String?
-  orders      OrderProducts[]
+  orders      ProductsOnOrder[]
 }
 
 model Order {
   id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   status      OrderStatus   @default(CREATED)
   name        String?
   comment     String?
-  products    OrderProducts[]
+  products    ProductsOnOrder[]
 }
 
-model OrderProducts {
+model ProductsOnOrder {
   order       Order         @relation(fields: [orderId], references: [id])
   orderId     String        // relation scalar field (used in the `@relation` attribute above)
   product     Product       @relation(fields: [productId], references: [id])
   productId   String        // relation scalar field (used in the `@relation` attribute above)
   quantity    Int
-  price       Float
   comment     String?
 
   @@id([orderId, productId])

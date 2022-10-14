@@ -8,7 +8,7 @@ const getNewProduct = () => ({
   title: `test-product-title::${Date.now()}`
 });
 
-describe("Products:", function () {
+describe.skip("Products:", function () {
   describe("Add Product", function () {
     let product: ReturnType<typeof getNewProduct>;
     let productId: string;
