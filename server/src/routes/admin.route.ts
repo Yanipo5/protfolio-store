@@ -36,7 +36,7 @@ const order = createRouter()
   })
 
   .mutation("update", {
-    input: z.object({ id: z.string().uuid(), status: z.enum(["CREATED", "PROCESSING", "DELIVERED"]) }),
+    input: z.object({ id: z.string().cuid(), status: z.enum(["CREATED", "PROCESSING", "DELIVERED"]) }),
     async resolve(context) {
       const { id, status } = context.input;
       return prisma.order.update({ where: { id }, data: { status } });

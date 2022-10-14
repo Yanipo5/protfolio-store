@@ -29,7 +29,7 @@ const order = createRouter()
   .mutation("update", {
     input: z.object({ id: z.string().cuid(), products: z.array(z.object({ id: z.string().cuid(), quantity: z.number() })) }),
     async resolve({ ctx, input }) {
-      console.log(ctx.token);
+      console.warn("Not checking user", ctx.token);
 
       return prisma.order.update({
         where: { id: input.id }, //TODO:  check if owned by user

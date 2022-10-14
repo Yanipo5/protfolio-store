@@ -32,7 +32,7 @@ describe("Products:", function () {
       } catch (error) {
         // @ts-ignore
         if (error?.data?.code) expect(error.data.code).toBe("UNAUTHORIZED");
-        else throw "unkown error";
+        else throw error;
       }
     });
 

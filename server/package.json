@@ -12,7 +12,7 @@
     "_____TEST____": "",
     "lint": "npx eslint src",
     "test": "npx jest",
-    "test-w": "npx jest --watch",
+    "test-w": "npx jest --watch test/orders.test.ts",
     "_____PRISMA____": "",
     "generate-prisma": "npx prisma generate",
     "format-prisma": "npx prisma format",
