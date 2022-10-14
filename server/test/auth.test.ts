@@ -1,7 +1,7 @@
 import { describe, expect, test, afterEach } from "@jest/globals";
 import { trpcClient, trpcClientBasicAuth, TrpcClientAuthenticated, prisma } from "./_utils";
 
-describe.skip("Auth", function () {
+describe("Auth", function () {
   describe("User", function () {
     const userIds: string[] = [];
 
