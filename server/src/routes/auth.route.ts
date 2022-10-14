@@ -1,17 +1,14 @@
 import type { token, Context } from "./context";
+import { signJwt, verifyJwt } from "./context";
 import { prisma } from "../dbClient";
 import { createRouter } from "./context";
 export { createContext } from "./context";
 import { createHash } from "crypto";
-import jwt from "jsonwebtoken";
-import { getEnv } from "../envSchema";
+import { env } from "../envSchema";
 import { z } from "zod";
 
-const env = getEnv();
-
 const passwordToHash = (password: string) => createHash("sha256").update(password, "utf-8").digest().toString("hex");
-const signJwt = (payload: token): string => jwt.sign(payload, env.AUTHORIZATION_SIGNATURE);
-const verifyJwt = (token: string) => jwt.verify(token, env.AUTHORIZATION_SIGNATURE);
+
 const addCookie = (context: Context, payload: token) => context.res.cookie("token", signJwt(payload), { httpOnly: true, secure: env.SECURE_COOKIE });
 
 export default createRouter()

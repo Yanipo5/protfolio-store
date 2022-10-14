@@ -1,12 +1,10 @@
+import { env } from "./envSchema";
 import path from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
 
-import { getEnv } from "./envSchema";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { createContext, appRouter } from "./routes";
-
-const env = getEnv();
 
 console.log("=== env: ===");
 console.dir(env);

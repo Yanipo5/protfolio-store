@@ -1,5 +1,6 @@
 import { createRouter } from "./context";
 import { prisma } from "../dbClient";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 const product = createRouter()
@@ -12,11 +13,18 @@ const product = createRouter()
   })
 
   .mutation("edit", {
-    input: z.object({ id: z.string().uuid(), title: z.string().optional(), inventory: z.number().optional(), price: z.number().optional() }),
+    input: z.object({ id: z.string().cuid(), title: z.string().optional(), inventory: z.number().optional(), price: z.number().optional(), image: z.string().url().optional() }),
     async resolve(context) {
-      const { id, title, inventory, price } = context.input;
+      const { id, title, inventory, price, image } = context.input;
       if (!title && inventory && !price) return { id };
-      return prisma.product.update({ where: { id }, data: { title, inventory, price } });
+      return prisma.product.update({ where: { id }, data: { title, inventory, price, image } });
+    }
+  })
+
+  .mutation("delete", {
+    input: z.object({ id: z.string().cuid() }),
+    async resolve(context) {
+      return prisma.product.delete({ where: { id: context.input.id } });
     }
   });
 
@@ -35,4 +43,10 @@ const order = createRouter()
     }
   });
 
-export default createRouter().merge("product.", product).merge("order.", order);
+export default createRouter()
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.token?.isAdmin) throw new TRPCError({ code: "UNAUTHORIZED", message: "This route requires admin authorization" });
+    return next();
+  })
+  .merge("product.", product)
+  .merge("order.", order);
