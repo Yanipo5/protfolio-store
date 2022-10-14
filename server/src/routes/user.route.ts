@@ -1,68 +1,68 @@
-import { createRouter } from "./context";
+import type { token, Context } from "./context";
+import { signJwt, verifyJwt } from "./context";
 import { prisma } from "../dbClient";
+import { createRouter } from "./context";
+export { createContext } from "./context";
+import { createHash } from "crypto";
+import { env } from "../envSchema";
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 
-const product = createRouter().query("getAll", {
-  async resolve() {
-    return prisma.order.findMany();
-  }
-});
+const passwordToHash = (password: string) => createHash("sha256").update(password, "utf-8").digest().toString("hex");
 
-const order = createRouter()
-  .query("getAll", {
-    async resolve(context) {
-      return prisma.order.findMany({ where: { userId: context.ctx.token?.user }, include: { products: true } });
-    }
-  })
+const addCookie = (context: Context, payload: token) => context.res.cookie("token", signJwt(payload), { httpOnly: true, secure: env.SECURE_COOKIE });
 
-  .mutation("create", {
-    input: z.array(z.object({ id: z.string().cuid(), quantity: z.number() })),
-    async resolve({ ctx, input }) {
-      return prisma.order.create({
-        data: { userId: ctx.token?.user as string, status: "CREATED", products: { createMany: { data: input.map((p) => ({ productId: p.id, quantity: p.quantity })) } } },
-        include: { products: true }
-      });
-    }
-  })
-
-  .mutation("update", {
-    input: z.object({ id: z.string().cuid(), products: z.array(z.object({ id: z.string().cuid(), quantity: z.number() })) }),
-    async resolve({ ctx, input }) {
-      console.warn("Not checking user", ctx.token);
-
-      return prisma.order.update({
-        where: { id: input.id }, //TODO:  check if owned by user
-        include: { products: true },
-        data: { products: { updateMany: input.products.map((p) => ({ where: { productId: p.id }, data: { quantity: p.quantity } })) } }
-      });
-    }
-  })
-
-  .mutation("delete", {
-    input: z.object({ id: z.string().cuid() }),
-    async resolve({ ctx, input }) {
-      return prisma.$transaction([prisma.productsOnOrder.deleteMany({ where: { orderId: input.id } }), prisma.order.deleteMany({ where: { id: input.id, userId: ctx.token?.user } })]);
-    }
-  });
 export default createRouter()
-  .middleware(async ({ ctx, next }) => {
-    if (!ctx.token?.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "This route requires user login" });
-    return next();
-  })
-  .merge("product.", product)
-  .merge("order.", order)
-  .mutation("signUp", {
-    input: z.object({ email: z.string(), password: z.string() }),
+  .query("login", {
+    meta: { permission: "user.login" },
     async resolve(context) {
-      const { email, password } = context.input;
-      return prisma.user.create({ data: { email, password_hash: password } });
+      const env = context.ctx.env;
+      // Authorization: scheme value
+
+      const auth = context.ctx.req.header("Authorization");
+      if (!auth) throw new Error("Missing Authorization Header");
+
+      const [scheme, value] = auth.split(" ");
+      switch (scheme) {
+        case "Basic":
+          const [user, password] = Buffer.from(value, "base64").toString("utf-8").split(":");
+          // Admin
+          if (user === "admin" && password === env.ADMIN_PASSWORD) {
+            addCookie(context.ctx, { id: user, roles: { admin: true } });
+            return;
+          }
+
+          // User
+          const dbUser = await prisma.user.findFirst({ where: { email: user } });
+          if (dbUser?.password_hash === passwordToHash(password)) {
+            addCookie(context.ctx, { id: dbUser.id, roles: { user: true } });
+            return;
+          }
+
+          // Failure
+          throw new Error("Could not valudate user");
+
+        default:
+          throw new Error(`Unrecognized authentication scheme: '${scheme}'`);
+      }
     }
   })
-  .query("login", {
-    input: z.object({ email: z.string(), password: z.string() }),
+
+  .mutation("signUp", {
+    meta: { permission: "user.create" },
+    input: z.object({ email: z.string().email(), password: z.string().min(6), name: z.string().optional() }),
     async resolve(context) {
-      const { email, password } = context.input;
-      return prisma.user.findFirst({ where: { email, password_hash: password } });
+      const { email, password, name } = context.input;
+      if (email === "admin") throw new Error(`user can't be admin`);
+      const password_hash = passwordToHash(password);
+      const dbUser = await prisma.user.create({ data: { email, password_hash, name } });
+      addCookie(context.ctx, { id: dbUser.id, roles: { user: true } });
+      return dbUser;
+    }
+  })
+
+  .query("validate", {
+    meta: { permission: "user.validate" },
+    async resolve(context) {
+      return verifyJwt(context.ctx.req.cookies.token);
     }
   });

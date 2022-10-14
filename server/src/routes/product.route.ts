@@ -1,10 +1,17 @@
 import { createRouter } from "./context";
 import { prisma } from "../dbClient";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-const product = createRouter()
+export default createRouter()
+  .query("getAll", {
+    meta: { permission: "products.getAll" },
+    async resolve() {
+      return prisma.order.findMany();
+    }
+  })
+
   .mutation("add", {
+    meta: { permission: "product.create" },
     input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url() }),
     async resolve(context) {
       const { title, inventory, price, image } = context.input;
@@ -13,6 +20,7 @@ const product = createRouter()
   })
 
   .mutation("edit", {
+    meta: { permission: "product.edit" },
     input: z.object({ id: z.string().cuid(), title: z.string().optional(), inventory: z.number().optional(), price: z.number().optional(), image: z.string().url().optional() }),
     async resolve(context) {
       const { id, title, inventory, price, image } = context.input;
@@ -22,31 +30,9 @@ const product = createRouter()
   })
 
   .mutation("delete", {
+    meta: { permission: "product.delete" },
     input: z.object({ id: z.string().cuid() }),
     async resolve(context) {
       return prisma.product.delete({ where: { id: context.input.id } });
     }
   });
-
-const order = createRouter()
-  .query("getAll", {
-    async resolve() {
-      return prisma.order.findMany();
-    }
-  })
-
-  .mutation("update", {
-    input: z.object({ id: z.string().cuid(), status: z.enum(["CREATED", "PROCESSING", "DELIVERED"]) }),
-    async resolve(context) {
-      const { id, status } = context.input;
-      return prisma.order.update({ where: { id }, data: { status } });
-    }
-  });
-
-export default createRouter()
-  .middleware(async ({ ctx, next }) => {
-    if (!ctx.token?.isAdmin) throw new TRPCError({ code: "UNAUTHORIZED", message: "This route requires admin authorization" });
-    return next();
-  })
-  .merge("product.", product)
-  .merge("order.", order);

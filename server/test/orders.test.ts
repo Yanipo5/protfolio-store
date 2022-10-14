@@ -15,7 +15,7 @@ const getNewProduct = () => ({
 const adminAddNewProduct = async () => {
   const trpcClient = new TrpcClientAuthenticated({ admin: true });
   await trpcClient.init();
-  const dbProduct = await trpcClient.client.mutation("admin.product.add", product);
+  const dbProduct = await trpcClient.client.mutation("product.add", product);
   productId = dbProduct.id;
 };
 
@@ -30,9 +30,9 @@ describe("Orders:", function () {
       const trpcClient1 = new TrpcClientAuthenticated();
       await trpcClient1.init();
       {
-        const order = await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient1.client.query("user.order.getAll");
+        const orders = await trpcClient1.client.query("order.getMyAll");
         expect(orders.length).toBe(1);
       }
     });
@@ -42,24 +42,24 @@ describe("Orders:", function () {
       const trpcClient1 = new TrpcClientAuthenticated();
       await trpcClient1.init();
       {
-        const order = await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient1.client.query("user.order.getAll");
+        const orders = await trpcClient1.client.query("order.getMyAll");
         expect(orders.length).toBe(1);
       }
 
       const trpcClient2 = new TrpcClientAuthenticated();
       await trpcClient2.init();
       {
-        const order = await trpcClient2.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient2.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient2.client.query("user.order.getAll");
+        const orders = await trpcClient2.client.query("order.getMyAll");
         expect(orders.length).toBe(1);
       }
       {
-        const order = await trpcClient2.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient2.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient2.client.query("user.order.getAll");
+        const orders = await trpcClient2.client.query("order.getMyAll");
         expect(orders.length).toBe(2);
       }
     });
@@ -80,22 +80,22 @@ describe("Orders:", function () {
       const trpcClient1 = new TrpcClientAuthenticated();
       await trpcClient1.init();
       {
-        const order = await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
         expect(order.products[0].quantity).toBe(1);
       }
       {
-        const order = await trpcClient1.client.mutation("user.order.update", { id: orderIds[0], products: [{ id: productId, quantity: 2 }] });
+        const order = await trpcClient1.client.mutation("order.update", { id: orderIds[0], products: [{ id: productId, quantity: 2 }] });
         expect(order.products[0].quantity).toBe(2);
       }
       {
         // create a second order
-        const order = await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
         expect(order.products[0].quantity).toBe(1);
       }
       {
-        const orders = await trpcClient1.client.query("user.order.getAll");
+        const orders = await trpcClient1.client.query("order.getMyAll");
         expect(orders.length).toBe(2);
         expect(orders[0]?.products[0].quantity).toBe(2);
         expect(orders[1]?.products[0].quantity).toBe(1);
@@ -107,17 +107,17 @@ describe("Orders:", function () {
       const trpcClient = new TrpcClientAuthenticated();
       await trpcClient.init();
       {
-        const order = await trpcClient.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient.client.query("user.order.getAll");
+        const orders = await trpcClient.client.query("order.getMyAll");
         expect(orders[0].status).toBe("CREATED");
       }
 
       const admin = new TrpcClientAuthenticated({ admin: true });
       await admin.init();
-      await admin.client.mutation("admin.order.update", { id: orderIds[0], status: "DELIVERED" });
+      await admin.client.mutation("order.updateStatus", { id: orderIds[0], status: "DELIVERED" });
       {
-        const orders = await trpcClient.client.query("user.order.getAll");
+        const orders = await trpcClient.client.query("order.getMyAll");
         expect(orders[0].status).toBe("DELIVERED");
       }
     });
@@ -127,14 +127,14 @@ describe("Orders:", function () {
       const trpcClient = new TrpcClientAuthenticated();
       await trpcClient.init();
       {
-        const order = await trpcClient.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
-        const orders = await trpcClient.client.query("user.order.getAll");
+        const orders = await trpcClient.client.query("order.getMyAll");
         expect(orders[0].status).toBe("CREATED");
       }
 
       try {
-        await trpcClient.client.mutation("admin.order.update", { id: orderIds[0], status: "DELIVERED" });
+        await trpcClient.client.mutation("order.updateStatus", { id: orderIds[0], status: "DELIVERED" });
         expect(false).toBe("User added product (should be only admin)");
       } catch (error) {
         // @ts-ignore
@@ -159,16 +159,16 @@ describe("Orders:", function () {
       const trpcClient1 = new TrpcClientAuthenticated();
       await trpcClient1.init();
       {
-        const order = await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
-        await trpcClient1.client.mutation("user.order.create", [{ id: productId, quantity: 1 }]);
+        const order = await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
+        await trpcClient1.client.mutation("order.create", [{ id: productId, quantity: 1 }]);
         orderIds.push(order.id);
         expect(order.products[0].quantity).toBe(1);
-        const orders = await trpcClient1.client.query("user.order.getAll");
+        const orders = await trpcClient1.client.query("order.getMyAll");
         expect(orders.length).toBe(2);
       }
       {
-        await trpcClient1.client.mutation("user.order.delete", { id: orderIds[0] });
-        const orders = await trpcClient1.client.query("user.order.getAll");
+        await trpcClient1.client.mutation("order.delete", { id: orderIds[0] });
+        const orders = await trpcClient1.client.query("order.getMyAll");
         expect(orders.length).toBe(1);
       }
     });

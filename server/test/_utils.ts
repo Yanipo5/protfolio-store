@@ -39,8 +39,8 @@ export class TrpcClientAuthenticated {
   }
 
   async init() {
-    if (!this.isAdmin) this.user = await trpcClient.mutation("auth.signUp", { email: this.email, password: this.password });
-    const response = await axios("/auth.login", { headers: { Authorization: `Basic ${Buffer.from(`${this.email}:${this.password}`, "utf-8").toString("base64")}` } });
+    if (!this.isAdmin) this.user = await trpcClient.mutation("user.signUp", { email: this.email, password: this.password });
+    const response = await axios("/user.login", { headers: { Authorization: `Basic ${Buffer.from(`${this.email}:${this.password}`, "utf-8").toString("base64")}` } });
     // @ts-ignore
     this.token = response.headers["set-cookie"].split(";")[0].split("=")[1] as string;
   }

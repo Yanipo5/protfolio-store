@@ -1,21 +1,19 @@
 import type { inferAsyncReturnType } from "@trpc/server";
+import type { RoleMap, Permission } from "../utils/authorization";
 import { env } from "../envSchema";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import jwt from "jsonwebtoken";
 import * as trpc from "@trpc/server";
 
-export type token = { user: string; isAdmin?: boolean };
+export type token = { id: string; roles: RoleMap };
 export type Context = inferAsyncReturnType<typeof createContext>;
+export type Meta = { permission: Permission };
 export const createContext = (o: trpcExpress.CreateExpressContextOptions) => {
-  const token = o.req.cookies["token"];
-  return {
-    req: o.req,
-    res: o.res,
-    env,
-    token: token ? verifyJwt(token) : undefined
-  };
+  const tokenCookie = o.req.cookies["token"];
+  const user: token = tokenCookie ? verifyJwt(tokenCookie) : { id: "NULL", roles: { viewer: true } };
+  return { req: o.req, res: o.res, env, user };
 };
-export const createRouter = () => trpc.router<Context>();
+export const createRouter = () => trpc.router<Context, Meta>();
 
 export const signJwt = (payload: token): string => jwt.sign(payload, env.AUTHORIZATION_SIGNATURE);
 export const verifyJwt = (token: string) => jwt.verify(token, env.AUTHORIZATION_SIGNATURE) as token;
