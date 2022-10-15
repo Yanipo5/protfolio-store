@@ -57,8 +57,9 @@ export default createRouter()
       if (email === "admin") throw new Error(`user can't be admin`);
       const password_hash = passwordToHash(password);
       const dbUser = await prisma.user.create({ data: { email, password_hash, name } });
-      addCookie(context.ctx, { id: dbUser.id, roles: { user: true } });
-      return dbUser;
+      const roles = { user: true };
+      addCookie(context.ctx, { id: dbUser.id, roles });
+      return { roles };
     }
   })
 

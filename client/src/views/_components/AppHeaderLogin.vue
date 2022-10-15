@@ -14,7 +14,8 @@ const form = reactive({
 });
 
 async function handleSignUp() {
-  await api.mutation("user.signUp", form);
+  const res = await api.mutation("user.signUp", form);
+  store.saveRoles(res.roles);
   dialogFormVisible.value = false;
 }
 async function handleLogin() {
