@@ -18,3 +18,12 @@ export default createTRPCClient<AppRouter>({
     httpLink({ url: "/trpc" })
   ]
 });
+
+export const basicAuthClient = (input: { email: string; password: string }) => {
+  const basicAuth = btoa(`${input.email}:${input.password}`);
+  return createTRPCClient<AppRouter>({
+    transformer: superjson,
+    links: [httpLink({ url: "/trpc" })],
+    headers: { Authorization: `Basic ${basicAuth}` }
+  });
+};

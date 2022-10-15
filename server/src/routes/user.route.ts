@@ -27,15 +27,17 @@ export default createRouter()
           const [user, password] = Buffer.from(value, "base64").toString("utf-8").split(":");
           // Admin
           if (user === "admin" && password === env.ADMIN_PASSWORD) {
-            addCookie(context.ctx, { id: user, roles: { admin: true } });
-            return;
+            const roles = { admin: true };
+            addCookie(context.ctx, { id: user, roles });
+            return { roles };
           }
 
           // User
           const dbUser = await prisma.user.findFirst({ where: { email: user } });
           if (dbUser?.password_hash === passwordToHash(password)) {
-            addCookie(context.ctx, { id: dbUser.id, roles: { user: true } });
-            return;
+            const roles = { user: true };
+            addCookie(context.ctx, { id: dbUser.id, roles });
+            return { roles };
           }
 
           // Failure
