@@ -12,7 +12,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   <el-menu :default-active="activeIndex" class="header" mode="horizontal" :ellipsis="false" @select="handleSelect">
     <el-menu-item index="0">LOGO</el-menu-item>
     <div class="flex-grow" />
-    <el-menu-item index="1"><AppHeaderLogin /></el-menu-item>
+    <AppHeaderLogin />
   </el-menu>
 </template>
 
