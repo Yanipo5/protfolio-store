@@ -6,17 +6,17 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "home",
+      name: "Home",
       component: App
     },
     {
       path: "/admin-portal",
-      name: "admin-portal",
+      name: "Admin Portal",
       component: () => import("./AdminPortal/index.vue")
     },
     {
       path: "/user-portal",
-      name: "user-portal",
+      name: "User Portal",
       component: () => import("./UserPortal/index.vue")
     }
   ]
