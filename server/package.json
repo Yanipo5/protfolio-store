@@ -4,7 +4,7 @@
   "main": "dist/server.js",
   "scripts": {
     "_____DEV____": "",
-    "dev": "SET NODE_ENV=development&& npx nodemon -e ts -w ./src -x ts-node --pretty ./src/server.ts",
+    "dev": "npx nodemon -e ts -w ./src -x ts-node --pretty ./src/server.ts",
     "_____BUILD____": "",
     "build": "npx tsc",
     "postinstall": "npx prisma generate",
