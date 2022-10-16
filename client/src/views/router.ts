@@ -27,13 +27,13 @@ const router = createRouter({
     },
     {
       path: "/user-portal",
-      name: "Ny Cart",
+      name: "My Cart",
       component: () => import("./UserPortal/index.vue"),
       meta: { roles: ["user"] }
     },
     {
       path: "/user-portal",
-      name: "Ny Orders",
+      name: "My Orders",
       component: () => import("./UserPortal/index.vue"),
       meta: { roles: ["user"] }
     }
