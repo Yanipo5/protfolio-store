@@ -9,8 +9,8 @@ const handleSelect = (key: string, keyPath: string[]) => {
 </script>
 
 <template>
-  <el-menu :default-active="activeIndex" class="header" mode="horizontal" :ellipsis="false" @select="handleSelect">
-    <el-menu-item index="0">Yaniv's Store</el-menu-item>
+  <el-menu :default-active="activeIndex" class="app-header" mode="horizontal" :ellipsis="false" @select="handleSelect">
+    <el-menu-item index="0">LOGO</el-menu-item>
     <div class="flex-grow" />
     <AppHeaderLogin />
   </el-menu>
@@ -20,7 +20,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 .flex-grow {
   flex-grow: 1;
 }
-.header {
+.app-header {
   padding: 0px;
 }
 </style>

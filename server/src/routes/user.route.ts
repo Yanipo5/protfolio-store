@@ -1,20 +1,26 @@
 import type { token, Context } from "./context";
-import { signJwt, verifyJwt } from "./context";
-import { prisma } from "../dbClient";
-import { createRouter } from "./context";
+import type { RoleMap } from "../utils/authorization";
 export { createContext } from "./context";
+
 import { createHash } from "crypto";
-import { env } from "../envSchema";
 import { z } from "zod";
+import { signJwt, verifyJwt, createRouter } from "./context";
+import { prisma } from "../dbClient";
+import { env } from "../envSchema";
 
 const passwordToHash = (password: string) => createHash("sha256").update(password, "utf-8").digest().toString("hex");
 
 const addCookie = (context: Context, payload: token) => context.res.cookie("token", signJwt(payload), { httpOnly: true, secure: env.SECURE_COOKIE });
 
+export type clientAuthData = {
+  user: string;
+  roles: RoleMap;
+};
+
 export default createRouter()
   .query("login", {
     meta: { permission: "user.login" },
-    async resolve(context) {
+    async resolve(context): Promise<clientAuthData> {
       const env = context.ctx.env;
       // Authorization: scheme value
 
@@ -29,7 +35,7 @@ export default createRouter()
           if (user === "admin" && password === env.ADMIN_PASSWORD) {
             const roles = { admin: true };
             addCookie(context.ctx, { id: user, roles });
-            return { roles };
+            return { user, roles };
           }
 
           // User
@@ -37,7 +43,7 @@ export default createRouter()
           if (dbUser?.password_hash === passwordToHash(password)) {
             const roles = { user: true };
             addCookie(context.ctx, { id: dbUser.id, roles });
-            return { roles };
+            return { user, roles };
           }
 
           // Failure
@@ -52,20 +58,28 @@ export default createRouter()
   .mutation("signUp", {
     meta: { permission: "user.create" },
     input: z.object({ email: z.string().email(), password: z.string().min(6), name: z.string().optional() }),
-    async resolve(context) {
+    async resolve(context): Promise<clientAuthData> {
       const { email, password, name } = context.input;
       if (email === "admin") throw new Error(`user can't be admin`);
       const password_hash = passwordToHash(password);
       const dbUser = await prisma.user.create({ data: { email, password_hash, name } });
       const roles = { user: true };
       addCookie(context.ctx, { id: dbUser.id, roles });
-      return { roles };
+      return { user: email, roles };
     }
   })
 
   .query("validate", {
     meta: { permission: "user.validate" },
+    async resolve(context): Promise<clientAuthData> {
+      const res = verifyJwt(context.ctx.req.cookies.token);
+      return { roles: res.roles, user: "" }; //TODO add email to JWT (not id)
+    }
+  })
+
+  .query("logout", {
+    meta: { permission: "user.logout" },
     async resolve(context) {
-      return verifyJwt(context.ctx.req.cookies.token);
+      context.ctx.res.clearCookie("token");
     }
   });

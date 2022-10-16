@@ -1,20 +1,28 @@
+import type { clientAuthData } from "portfolio-store-server/src/routes/user.route";
 import { defineStore } from "pinia";
-import type { RoleMap } from "portfolio-store-server/src/utils/authorization";
 
-const localStorageRolesKey = "roles";
+const localStorageTokenKey = "token";
 
+const getDefulatDate = (): clientAuthData => ({ roles: { viewer: true }, user: "" });
 export default defineStore("roles", {
-  state: () => ({ roles: loadRolesFromLocalstore() }),
+  state: () => ({ ...getLocalhostData<clientAuthData>(localStorageTokenKey, getDefulatDate()) }),
   getters: {},
   actions: {
-    saveRoles(roles: RoleMap) {
-      this.roles = roles;
-      localStorage.setItem(localStorageRolesKey, JSON.stringify(roles));
+    saveToken(token: clientAuthData) {
+      this.user = token.user;
+      this.roles = token.roles;
+      localStorage.setItem(localStorageTokenKey, JSON.stringify(token));
+    },
+    deleteToken() {
+      const data = getDefulatDate();
+      this.user = data.user;
+      this.roles = data.roles;
+      localStorage.removeItem(localStorageTokenKey);
     }
   }
 });
 
-function loadRolesFromLocalstore(): RoleMap {
-  const raw = localStorage.getItem(localStorageRolesKey);
-  return raw ? JSON.parse(raw) : { viewer: true };
+function getLocalhostData<T>(key: string, defaultValue: T): T {
+  const raw = localStorage.getItem(key);
+  return raw ? JSON.parse(raw) : defaultValue;
 }

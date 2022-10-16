@@ -6,6 +6,7 @@ export type Permission =
   | "user.login"
   | "user.create"
   | "user.validate"
+  | "user.logout"
   | "products.getAll"
   | "product.create"
   | "product.edit"
@@ -23,6 +24,7 @@ export const permissionMap: Record<Permission, Role[]> = {
   "user.login": allRoles,
   "user.create": allRoles,
   "user.validate": allRoles,
+  "user.logout": allRoles,
   //
   "products.getAll": allRoles,
   "product.create": ["admin"],
