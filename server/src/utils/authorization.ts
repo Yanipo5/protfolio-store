@@ -1,6 +1,6 @@
 export type Role = "admin" | "user" | "viewer";
 export type RoleMap = Partial<Record<Role, boolean>>;
-const allRoles: Role[] = ["admin", "user", "viewer"];
+export const allRoles: Role[] = ["admin", "user", "viewer"];
 
 export type Permission =
   | "user.login"
@@ -41,4 +41,8 @@ export const permissionMap: Record<Permission, Role[]> = {
 
 export function authorize(roles: RoleMap, permission: Permission) {
   return permissionMap[permission].some((p) => roles[p]);
+}
+
+export function authorizeRole(roles: Role[], userRoles: RoleMap) {
+  return roles.some((r) => userRoles[r]);
 }

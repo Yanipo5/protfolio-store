@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { Setting } from "@element-plus/icons-vue";
 import api, { basicAuthClient } from "@/utils/api";
 import useUserStore from "@/store/user";
 
 const store = useUserStore();
 const loginDialogFormVisible = ref(false);
-const logoutDialogFormVisible = ref(false);
 const formMode = ref<"LOGIN" | "SIGN_UP">("LOGIN");
 const formLabelWidth = "80px";
 
@@ -20,17 +18,14 @@ async function handleSignUp() {
   store.saveToken(res);
   loginDialogFormVisible.value = false;
 }
+
 async function handleLogin() {
   const client = basicAuthClient(form);
   const res = await client.query("user.login");
   store.saveToken(res);
   loginDialogFormVisible.value = false;
 }
-async function handleLogout() {
-  logoutDialogFormVisible.value = false;
-  await api.query("user.logout");
-  store.deleteToken();
-}
+
 async function handleDialogClose() {
   form.email = "";
   form.password = "";
@@ -41,19 +36,10 @@ const getTitle = () => {
 </script>
 
 <template>
-  <!-- Left Side Button -->
-  <el-menu-item v-if="store.roles.viewer" index="3" @click="loginDialogFormVisible = true">Login</el-menu-item>
-  <el-sub-menu v-else index="3" popper-class="app-setting-button-popper">
-    <template #title>
-      <el-icon> <Setting /></el-icon
-    ></template>
-    <el-menu-item index="3-1" disabled
-      ><span class="greeting2">Hi {{ store.user }}</span></el-menu-item
-    >
-    <el-menu-item index="3-2" @click="logoutDialogFormVisible = true">Logout</el-menu-item>
-  </el-sub-menu>
+  <!-- Login Button -->
+  <el-menu-item index="2" @click="loginDialogFormVisible = true">Login</el-menu-item>
 
-  <!-- Login / Sign up Dialog -->
+  <!-- Login Dialog -->
   <el-dialog v-model="loginDialogFormVisible" :title="getTitle()" class="app-header-login-dialog" @closed="handleDialogClose">
     <el-form :model="form">
       <el-form-item label="User" :label-width="formLabelWidth">
@@ -78,25 +64,10 @@ const getTitle = () => {
       </div>
     </template>
   </el-dialog>
-
-  <!-- Logout Dialog -->
-  <el-dialog v-model="logoutDialogFormVisible" title="Are You Sure you want to logout?" class="app-header-logout-dialog">
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="logoutDialogFormVisible = false">Cancel</el-button>
-        <el-button type="danger" @click="handleLogout">Logout</el-button>
-      </span>
-    </template>
-  </el-dialog>
 </template>
 
 <style scoped></style>
 <style>
-.app-setting-button-popper .el-menu-item.is-disabled {
-  opacity: 1;
-  border-bottom: 1px solid;
-  border-bottom-color: var(--vt-c-white-mut) !important;
-}
 .app-header-login-dialog {
   width: 100%;
 }
