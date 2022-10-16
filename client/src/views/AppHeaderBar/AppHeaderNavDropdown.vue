@@ -9,12 +9,16 @@ const store = useUserStore();
 const getMyRoutes = () => {
   return router.getRoutes().filter((r) => authorizeRole(r.meta.roles as Role[], store.roles));
 };
+
+const handleClick = (r: { path: string }) => {
+  router.push(r.path);
+};
 </script>
 
 <template>
-  <el-sub-menu v-if="!store.roles.viewer" index="1" popper-class="app-navigation-button-popper">
+  <el-sub-menu v-if="!store.roles.viewer" index="Navigation-DropDown">
     <template #title>{{ $route.name }}</template>
-    <el-menu-item v-for="(r, i) in getMyRoutes()" :key="i" index="{{`1-${i+1}`}}" @click="() => $router.push(r.path)">{{ r.name }}</el-menu-item>
+    <el-menu-item v-for="r in getMyRoutes()" :index="r.name" :key="r.path" @click="() => handleClick(r)">{{ r.name }}</el-menu-item>
   </el-sub-menu>
 </template>
 

@@ -8,8 +8,8 @@ const store = useUserStore();
 </script>
 
 <template>
-  <el-menu class="app-header" mode="horizontal" :ellipsis="false">
-    <el-menu-item index="0">LOGO</el-menu-item>
+  <el-menu class="app-header" mode="horizontal" :ellipsis="false" :unique-opened="true" menu-trigger="click">
+    <el-menu-item index="LOGO">LOGO</el-menu-item>
     <AppHeaderNavDropdown />
     <div class="flex-grow" />
     <AppHeaderLogin v-if="store.roles.viewer" />

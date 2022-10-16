@@ -3,6 +3,9 @@ import { ref } from "vue";
 import { Setting } from "@element-plus/icons-vue";
 import api from "@/utils/api";
 import useUserStore from "@/store/user";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const store = useUserStore();
 const logoutDialogFormVisible = ref(false);
@@ -11,6 +14,7 @@ async function handleLogout() {
   logoutDialogFormVisible.value = false;
   await api.query("user.logout");
   store.deleteToken();
+  router.push("/");
 }
 </script>
 
