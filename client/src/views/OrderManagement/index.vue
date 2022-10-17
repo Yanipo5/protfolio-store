@@ -1,25 +1,25 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import api, { sanitazeInputPayload } from "@/utils/api";
+// import { reactive, ref } from "vue";
+// import api, { sanitazeInputPayload } from "@/utils/api";
 import PageHeader from "@/views/_components/PageHeader.vue";
 
-const dialogFormVisible = ref(false);
-const formLabelWidth = "100px";
+// const dialogFormVisible = ref(false);
+// const formLabelWidth = "100px";
 
-const getDefualtState = () => ({
-  title: "My New Product",
-  description: "Product description",
-  inventory: 100,
-  price: 9.99,
-  image: ""
-});
+// const getDefualtState = () => ({
+//   title: "My New Product",
+//   description: "Product description",
+//   inventory: 100,
+//   price: 9.99,
+//   image: ""
+// });
 
-const form = reactive(getDefualtState());
+// const form = reactive(getDefualtState());
 
-async function handleConfirm() {
-  await api.mutation("product.add", sanitazeInputPayload(form) as ReturnType<typeof getDefualtState>);
-  dialogFormVisible.value = false;
-}
+// async function handleConfirm() {
+//   await api.mutation("product.add", sanitazeInputPayload(form) as ReturnType<typeof getDefualtState>);
+//   dialogFormVisible.value = false;
+// }
 </script>
 
 <template>
@@ -27,12 +27,12 @@ async function handleConfirm() {
   <PageHeader />
 
   <!-- Add Product -->
-  <span class="success-button">
+  <!-- <span class="success-button">
     <el-button type="primary" @click="dialogFormVisible = true" size="large">Add Product </el-button>
-  </span>
+  </span> -->
 
   <!-- Add Product Dialog -->
-  <el-dialog v-model="dialogFormVisible" title="Add Product" class="add-product-dialog">
+  <!-- <el-dialog v-model="dialogFormVisible" title="Add Product" class="add-product-dialog">
     <el-form :model="form">
       <el-form-item v-for="(k, name) in getDefualtState()" :key="name" :label="`${name}:`" :label-width="formLabelWidth" class="form-label">
         <el-input v-if="typeof form[name] === 'string'" v-model="form[name]" autocomplete="off" />
@@ -46,10 +46,10 @@ async function handleConfirm() {
         <el-button type="success" @click="handleConfirm()">Confirm</el-button>
       </span>
     </template>
-  </el-dialog>
+  </el-dialog> -->
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .success-button {
   margin-top: 2vh;
   margin-bottom: 2vh;
@@ -76,4 +76,4 @@ async function handleConfirm() {
 .add-product-dialog .el-dialog__footer {
   padding-top: 0;
 }
-</style>
+</style> -->

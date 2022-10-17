@@ -22,9 +22,9 @@ export default createRouter({
       meta: { roles: ["admin"], order: 100 }
     },
     {
-      path: "/admin-portal/1",
+      path: "/order-management",
       name: "Order Management",
-      component: () => import("./AdminPortal/index.vue"),
+      component: () => import("./OrderManagement/index.vue"),
       meta: { roles: ["admin"], order: 110 }
     },
     {

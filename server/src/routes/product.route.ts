@@ -12,7 +12,7 @@ export default createRouter()
 
   .mutation("add", {
     meta: { permission: "product.create" },
-    input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url().optional() }),
+    input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url().optional(), description: z.string().optional() }),
     async resolve(context) {
       return prisma.product.create({ data: context.input });
     }
