@@ -25,7 +25,7 @@ async function handleLogout() {
       <el-icon> <Setting /></el-icon
     ></template>
     <el-menu-item index="2-1" disabled
-      ><span class="greeting2">Hi {{ store.user }}</span></el-menu-item
+      ><span class="greeting2">User: {{ store.user }}</span></el-menu-item
     >
     <el-menu-item index="2-2" @click="logoutDialogFormVisible = true">Logout</el-menu-item>
   </el-sub-menu>

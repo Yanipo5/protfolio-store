@@ -16,9 +16,9 @@ export default createRouter({
     },
     // Applying autho only for non Home routes
     {
-      path: "/admin-portal",
+      path: "/product-management",
       name: "Product Management",
-      component: () => import("./AdminPortal/index.vue"),
+      component: () => import("./ProductManagement/index.vue"),
       meta: { roles: ["admin"], order: 100 }
     },
     {

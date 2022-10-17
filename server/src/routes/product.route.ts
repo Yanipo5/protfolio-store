@@ -6,16 +6,15 @@ export default createRouter()
   .query("getAll", {
     meta: { permission: "products.getAll" },
     async resolve() {
-      return prisma.order.findMany();
+      return prisma.product.findMany();
     }
   })
 
   .mutation("add", {
     meta: { permission: "product.create" },
-    input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url() }),
+    input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url().optional() }),
     async resolve(context) {
-      const { title, inventory, price, image } = context.input;
-      return prisma.product.create({ data: { title, inventory, price, image } });
+      return prisma.product.create({ data: context.input });
     }
   })
 

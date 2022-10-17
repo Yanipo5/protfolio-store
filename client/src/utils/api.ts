@@ -27,3 +27,12 @@ export const basicAuthClient = (input: { email: string; password: string }) => {
     headers: { Authorization: `Basic ${basicAuth}` }
   });
 };
+
+export function sanitazeInputPayload<T extends {}>(obj: T): Partial<T> {
+  const copy = { ...obj };
+  Object.keys({ ...copy }).forEach((key) => {
+    // @ts-ignore
+    if (copy[key] === "") delete copy[key];
+  });
+  return copy;
+}

@@ -9,7 +9,7 @@ const store = useUserStore();
 
 <template>
   <el-menu class="app-header" mode="horizontal" :ellipsis="false" :unique-opened="true" menu-trigger="click">
-    <el-menu-item index="LOGO">LOGO</el-menu-item>
+    <el-menu-item index="LOGO" @click="() => $router.push('/')">Yaniv's Store</el-menu-item>
     <AppHeaderNavDropdown />
     <div class="flex-grow" />
     <AppHeaderLogin v-if="store.roles.viewer" />
