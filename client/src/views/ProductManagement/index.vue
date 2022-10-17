@@ -1,25 +1,17 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import api, { sanitazeInputPayload } from "@/utils/api";
 import PageHeader from "@/views/_components/PageHeader.vue";
+import ProductsTable from "./ProductsTable.vue";
+import useProductsStore from "@/store/products";
 
-const dialogFormVisible = ref(false);
+const store = useProductsStore();
 const formLabelWidth = "100px";
 
-const getDefualtState = () => ({
-  title: "My New Product",
-  description: "Product description",
-  inventory: 100,
-  price: 9.99,
-  image: ""
-});
-
-const form = reactive(getDefualtState());
-
 async function handleConfirm() {
-  await api.mutation("product.add", sanitazeInputPayload(form) as ReturnType<typeof getDefualtState>);
-  dialogFormVisible.value = false;
+  if (store.productDialog.id) return await store.editProduct();
+  return await store.AddProduct();
 }
+
+const getPlaceholder = (key: string) => (key === "image" ? "Image url" : "");
 </script>
 
 <template>
@@ -28,25 +20,28 @@ async function handleConfirm() {
 
   <!-- Add Product -->
   <span class="success-button">
-    <el-button type="primary" @click="dialogFormVisible = true" size="large">Add Product </el-button>
+    <el-button type="primary" @click="store.openProductDialogCreate" size="large">Add Product </el-button>
   </span>
 
   <!-- Add Product Dialog -->
-  <el-dialog v-model="dialogFormVisible" title="Add Product" class="add-product-dialog">
-    <el-form :model="form">
-      <el-form-item v-for="(k, name) in getDefualtState()" :key="name" :label="`${name}:`" :label-width="formLabelWidth" class="form-label">
-        <el-input v-if="typeof form[name] === 'string'" v-model="form[name]" autocomplete="off" />
-        <el-input-number v-else v-model="form[name]" :min="0" />
+  <el-dialog v-model="store.dialogFormVisible" title="Add Product" class="add-product-dialog">
+    <el-form :model="store.productDialog">
+      <el-form-item v-for="(k, name) in store.productDialog" :key="name" :label="`${name}:`" :label-width="formLabelWidth" class="form-label">
+        <el-input-number v-if="typeof store.productDialog[name] === 'number'" v-model="store.productDialog[name]" :min="0" />
+        <el-input v-else v-model="store.productDialog[name]" autocomplete="off" :placeholder="getPlaceholder(name)" />
       </el-form-item>
     </el-form>
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="success" @click="handleConfirm()">Confirm</el-button>
+        <el-button @click="store.dialogFormVisible = false">Cancel</el-button>
+        <el-button type="success" @click="handleConfirm()" :loading="store.isProductDialogLoading">Confirm</el-button>
       </span>
     </template>
   </el-dialog>
+
+  <!-- Products Table -->
+  <ProductsTable />
 </template>
 
 <style scoped>
