@@ -3,7 +3,9 @@
     <el-col v-for="(p, i) in store.products" :key="p.id">
       <el-card class="card">
         <div class="product-wrapper">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" />
+          <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" /> -->
+          <img v-if="p.image" :src="p.image" class="image" />
+          <img v-else src="@/assets/no_image.jpg" class="image" />
           <div class="content">
             <div class="title">{{ p.title }}</div>
             <div class="description">{{ p.description }}</div>
@@ -28,7 +30,7 @@ const producs = store.products;
 .card {
   margin: 1vh 0 0 0;
 }
-.card >>> .el-card__body {
+.card:deep() .el-card__body {
   padding: 1vh;
 }
 .product-wrapper {
