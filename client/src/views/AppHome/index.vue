@@ -1,13 +1,13 @@
 <template>
   <el-row>
-    <el-col v-for="(o, i) in 3" :key="o">
+    <el-col v-for="(p, i) in store.products" :key="p.id">
       <el-card class="card">
         <div class="product-wrapper">
           <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" />
           <div class="content">
-            <div class="title">Yummy hamburger</div>
-            <div class="description">Yummy hamburger is good for you</div>
-            <div class="price">{{ o }}</div>
+            <div class="title">{{ p.title }}</div>
+            <div class="description">{{ p.description }}</div>
+            <div class="price">{{ p.price }} $</div>
             <div style="flex-grow: 1" />
             <el-button type="primary" size="large" class="button">Add To Cart</el-button>
           </div>
@@ -17,9 +17,11 @@
   </el-row>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import useProductsStore from "@/store/products";
 
-const currentDate = ref(new Date());
+const store = useProductsStore();
+store.getProducts();
+const producs = store.products;
 </script>
 
 <style scoped>
