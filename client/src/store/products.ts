@@ -63,6 +63,10 @@ export default defineStore(localStorageKey, {
       this.productDialog = { id, title, description, inventory, price, image };
       this.dialogFormVisible = true;
     },
+    async handleConfirm() {
+      if (this.productDialog.id) return await this.editProduct();
+      return await this.AddProduct();
+    },
     async editProduct() {
       try {
         this.editProductIsLoading = true;

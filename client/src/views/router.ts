@@ -28,13 +28,13 @@ export default createRouter({
       meta: { roles: ["admin"], order: 110 }
     },
     {
-      path: "/user-portal",
+      path: "/my-cart",
       name: "My Cart",
       component: () => import("./UserPortal/index.vue"),
       meta: { roles: ["user"], order: 200 }
     },
     {
-      path: "/user-portal/1",
+      path: "/my-orders",
       name: "My Orders",
       component: () => import("./UserPortal/index.vue"),
       meta: { roles: ["user"], order: 210 }
