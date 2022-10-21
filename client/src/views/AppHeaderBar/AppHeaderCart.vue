@@ -1,22 +1,16 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import { ShoppingCart } from "@element-plus/icons-vue";
-import api from "@/utils/api";
-import useUserStore from "@/store/user";
-import { useRouter } from "vue-router";
+import useCartStore from "@/store/cart";
 
-const router = useRouter();
-
-const store = useUserStore();
-const cart: any[] = [];
+const store = useCartStore();
 </script>
 
 <template>
   <el-menu-item index="2" style="padding: 0">
-    <el-badge v-if="cart.length" is-dot class="dot"
+    <el-badge v-if="store.products.length" is-dot class="dot"
       ><el-icon> <ShoppingCart /></el-icon
     ></el-badge>
-    <el-icon> <ShoppingCart /></el-icon>
+    <el-icon v-else> <ShoppingCart /></el-icon>
   </el-menu-item>
 </template>
 

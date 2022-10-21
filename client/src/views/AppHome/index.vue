@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col v-for="(p, i) in store.products" :key="p.id">
+    <el-col v-for="(p, i) in productsStore.products" :key="p.id">
       <el-card class="card">
         <div class="product-wrapper">
           <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" /> -->
@@ -11,7 +11,7 @@
             <div class="description">{{ p.description }}</div>
             <div class="price">{{ p.price }} $</div>
             <div style="flex-grow: 1" />
-            <el-button type="primary" size="large" class="button">Add To Cart</el-button>
+            <el-button type="primary" size="large" class="button" @click="cartStore.addToCart(p)">Add To Cart</el-button>
           </div>
         </div>
       </el-card>
@@ -20,10 +20,12 @@
 </template>
 <script lang="ts" setup>
 import useProductsStore from "@/store/products";
+import useCartStore from "@/store/cart";
 
-const store = useProductsStore();
-store.getProducts();
-const producs = store.products;
+const cartStore = useCartStore();
+const productsStore = useProductsStore();
+productsStore.getProducts();
+const producs = productsStore.products;
 </script>
 
 <style scoped>

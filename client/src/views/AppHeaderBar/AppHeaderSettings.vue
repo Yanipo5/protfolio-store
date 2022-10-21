@@ -52,4 +52,7 @@ async function handleLogout() {
   border-bottom: 1px solid;
   border-bottom-color: var(--vt-c-white-mut) !important;
 }
+.app-header-logout-dialog {
+  width: 100vw;
+}
 </style>
