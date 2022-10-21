@@ -54,7 +54,9 @@ const getShow = (key: string) => key !== "id";
 
 <style>
 .add-product-dialog {
-  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100vw;
 }
 </style>
 

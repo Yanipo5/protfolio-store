@@ -2,6 +2,7 @@
 import AppHeaderLogin from "./AppHeaderLogin.vue";
 import AppHeaderSetting from "./AppHeaderSettings.vue";
 import AppHeaderNavDropdown from "./AppHeaderNavDropdown.vue";
+import AppHeaderCart from "./AppHeaderCart.vue";
 import useUserStore from "@/store/user";
 
 const store = useUserStore();
@@ -12,6 +13,7 @@ const store = useUserStore();
     <el-menu-item index="LOGO" @click="() => $router.push('/')">Yaniv's Store</el-menu-item>
     <AppHeaderNavDropdown />
     <div class="flex-grow" />
+    <AppHeaderCart />
     <AppHeaderLogin v-if="store.roles.viewer" />
     <AppHeaderSetting v-else />
   </el-menu>
@@ -19,9 +21,10 @@ const store = useUserStore();
 
 <style>
 .flex-grow {
-  flex-grow: 1;
+  flex-grow: 100;
 }
 .app-header {
+  align-items: center;
   padding: 0px;
 }
 </style>

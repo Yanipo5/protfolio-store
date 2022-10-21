@@ -20,7 +20,7 @@ async function handleLogout() {
 
 <template>
   <!-- Setting Side Button -->
-  <el-sub-menu index="2" popper-class="app-setting-button-popper">
+  <el-sub-menu index="2" popper-class="app-setting-button-popper" class="app-setting-button">
     <template #title>
       <el-icon> <Setting /></el-icon
     ></template>
@@ -43,6 +43,9 @@ async function handleLogout() {
 
 <style scoped></style>
 <style>
+.app-setting-button .el-sub-menu__title {
+  padding-left: 0;
+}
 .app-setting-button-popper .el-menu-item.is-disabled {
   opacity: 1;
   border-bottom: 1px solid;
