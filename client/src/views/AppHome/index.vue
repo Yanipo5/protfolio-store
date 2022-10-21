@@ -11,7 +11,7 @@
             <div class="description">{{ p.description }}</div>
             <div class="price">{{ p.price }} $</div>
             <div style="flex-grow: 1" />
-            <el-button type="primary" size="large" class="button" @click="cartStore.addToCart(p)">Add To Cart</el-button>
+            <el-button type="primary" size="large" class="button" @click="() => cartStore.addToCart(p)">Add To Cart</el-button>
           </div>
         </div>
       </el-card>

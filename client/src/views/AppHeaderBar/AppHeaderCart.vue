@@ -3,11 +3,12 @@ import { ShoppingCart } from "@element-plus/icons-vue";
 import useCartStore from "@/store/cart";
 
 const store = useCartStore();
+const cartNotEmpty = () => Object.values(store.products).some((v) => v);
 </script>
 
 <template>
   <el-menu-item index="2" style="padding: 0">
-    <el-badge v-if="store.products.length" is-dot class="dot"
+    <el-badge v-if="cartNotEmpty()" is-dot class="dot"
       ><el-icon> <ShoppingCart /></el-icon
     ></el-badge>
     <el-icon v-else> <ShoppingCart /></el-icon>
