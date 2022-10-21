@@ -34,7 +34,7 @@ const producs = store.products;
 .product-wrapper {
   display: flex;
   /* height: calc(33vh - 58px); */
-  height: calc((100vh - 6vh - 58px) / 3);
+  height: calc((100vh - 10vh - 58px) / 3);
 }
 
 .title {
