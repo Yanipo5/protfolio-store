@@ -45,6 +45,7 @@ async function handleLogout() {
 <style>
 .app-setting-button .el-sub-menu__title {
   padding-left: 0;
+  padding-right: 4vw;
 }
 .app-setting-button-popper .el-menu-item.is-disabled {
   opacity: 1;
