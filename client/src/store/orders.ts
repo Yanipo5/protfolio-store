@@ -1,12 +1,14 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import type { Order } from "@prisma/client";
+import { defineStore } from "pinia";
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
+const localStorageTokenKey = "orders";
 
-  return { count, doubleCount, increment }
-})
+const getDefulatDate = (): Order[] => [];
+export default defineStore("orders", {
+  state: () => ({ ...getLocalhostData<Order[]>(localStorageTokenKey, getDefulatDate()) })
+});
+
+function getLocalhostData<T>(key: string, defaultValue: T): T {
+  const raw = localStorage.getItem(key);
+  return raw ? JSON.parse(raw) : defaultValue;
+}

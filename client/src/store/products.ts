@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
 import type { Product } from "@prisma/client";
+import { defineStore } from "pinia";
 import api, { sanitazeInputPayload } from "@/utils/api";
 
 const localStorageKey = "products";

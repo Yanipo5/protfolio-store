@@ -31,7 +31,7 @@ export default createRouter({
       path: "/my-cart",
       name: "My Cart",
       component: () => import("./MyCart/index.vue"),
-      meta: { roles: ["user"], order: 200 }
+      meta: { roles: ["user", "viewer"], order: 200 }
     },
     {
       path: "/my-orders",

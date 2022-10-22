@@ -5,7 +5,7 @@ const localStorageTokenKey = "token";
 
 const getDefulatDate = (): clientAuthData => ({ roles: { viewer: true }, user: "" });
 export default defineStore("roles", {
-  state: () => ({ ...getLocalhostData<clientAuthData>(localStorageTokenKey, getDefulatDate()) }),
+  state: () => ({ ...getLocalhostData<clientAuthData>(localStorageTokenKey, getDefulatDate()), loginDialogFormVisible: false }),
   getters: {},
   actions: {
     saveToken(token: clientAuthData) {
@@ -13,11 +13,12 @@ export default defineStore("roles", {
       this.roles = token.roles;
       localStorage.setItem(localStorageTokenKey, JSON.stringify(token));
     },
-    deleteToken() {
+    deleteData() {
       const data = getDefulatDate();
       this.user = data.user;
       this.roles = data.roles;
-      localStorage.removeItem(localStorageTokenKey);
+      localStorage.clear();
+      window.location.href = "/";
     }
   }
 });

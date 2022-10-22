@@ -13,7 +13,7 @@ const logoutDialogFormVisible = ref(false);
 async function handleLogout() {
   logoutDialogFormVisible.value = false;
   await api.query("user.logout");
-  store.deleteToken();
+  store.deleteData();
   router.push("/");
 }
 </script>

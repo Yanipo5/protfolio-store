@@ -3,7 +3,6 @@
     <el-col v-for="(p, i) in productsStore.products" :key="p.id">
       <el-card class="card">
         <div class="product-wrapper">
-          <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image" /> -->
           <img v-if="p.image" :src="p.image" class="image" />
           <img v-else src="@/assets/no_image.jpg" class="image" />
           <div class="content">

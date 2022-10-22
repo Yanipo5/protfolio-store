@@ -17,7 +17,7 @@ const handleClick = (r: { path: string }) => {
 </script>
 
 <template>
-  <el-sub-menu v-if="!store.roles.viewer" index="Navigation-DropDown">
+  <el-sub-menu index="Navigation-DropDown">
     <template #title>{{ $route.name }}</template>
     <el-menu-item v-for="r in getMyRoutes()" :index="r.name" :key="r.path" @click="() => handleClick(r)">{{ r.name }}</el-menu-item>
   </el-sub-menu>

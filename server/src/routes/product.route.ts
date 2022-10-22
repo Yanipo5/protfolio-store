@@ -10,6 +10,14 @@ export default createRouter()
     }
   })
 
+  .query("getByIds", {
+    meta: { permission: "products.getAll" },
+    input: z.array(z.string()),
+    async resolve(context) {
+      return prisma.product.findMany({ where: { id: { in: context.input } } });
+    }
+  })
+
   .mutation("add", {
     meta: { permission: "product.create" },
     input: z.object({ title: z.string(), inventory: z.number(), price: z.number(), image: z.string().url().optional(), description: z.string().optional() }),

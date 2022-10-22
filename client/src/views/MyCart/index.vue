@@ -1,58 +1,82 @@
 <template>
-  <div>{{ store.products }}</div>
+  <PageHeader />
+  <!-- Cart -->
+  <el-card v-for="p in cartStore.cart" :key="p.id" class="card">
+    <div class="image">
+      <img v-if="p.image" :src="p.image" />
+      <img v-else src="@/assets/no_image.jpg" />
+    </div>
+    <div class="content">
+      <div class="title">{{ p.title }}</div>
+      <el-input-number v-model="p.quantity" :min="0" :max="5" @change="(value: number) => cartStore.updateProductQuantity(p.id,value)" />
+      <div class="prices">
+        <div>each {{ p.price }} $</div>
+        <div>total {{ p.totalPrice.toFixed(2) }} $</div>
+      </div>
+    </div>
+  </el-card>
+
+  <!-- Total & Action -->
+  <div class="bottom">
+    <div class="total-price">Total: {{ cartStore.cartTotal }} $</div>
+    <el-button type="primary" size="large" @click="buttonAction">{{ buttonTxt() }}</el-button>
+  </div>
 </template>
+
 <script lang="ts" setup>
 import useCartStore from "@/store/cart";
+import useUserStore from "@/store/user";
+import api from "@/utils/api";
+import PageHeader from "@/views/_components/PageHeader.vue";
 
-const store = useCartStore();
+const cartStore = useCartStore();
+const userStore = useUserStore();
+cartStore.getProductsDefinitions();
+
+const buttonTxt = () => (userStore.roles.viewer ? "Login" : "Order Now");
+const buttonAction = () => {
+  if (userStore.roles.viewer) userStore.loginDialogFormVisible = true;
+  else cartStore.orderCart();
+};
 </script>
 
 <style scoped>
 .card {
-  margin: 1vh 0 0 0;
+  margin-top: 1vh;
 }
-.card:deep() .el-card__body {
+.card:deep .el-card__body {
   padding: 1vh;
-}
-.product-wrapper {
   display: flex;
-  /* height: calc(33vh - 58px); */
-  height: calc((100vh - 10vh - 58px) / 3);
+  flex-direction: row;
 }
-
-.title {
-  font-size: 3vh;
-  font-weight: bold;
-  line-height: 3vh;
-  border-bottom: 1px darkgray solid;
-  padding-bottom: 1vh;
-}
-
-.description {
-  padding-top: 1vh;
-  font-size: 2vh;
-  line-height: 2vh;
-}
-
-.price {
-  padding-top: 5vh;
-  font-size: 3vh;
-  font-weight: bold;
-  line-height: 2vh;
-  color: darkgreen;
-}
-
 .image {
-  width: 50vw;
-  display: block;
+  width: 30vw;
 }
-
 .content {
-  padding: 0vh 1vh 0vh 1vh;
+  margin-left: 1vh;
+  flex-grow: 1;
+}
+.title {
+  font-weight: bold;
+}
+.prices {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
+}
+.image:deep img {
+  width: 100%;
+  height: 100%;
+}
+.bottom {
+  display: flex;
+  /* justify-content: space-between; */
+  margin-top: 1vh;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  font-family: "Brush Script MT, Brush Script Std, cursive	";
+}
+.total-price {
+  font-size: 3vh;
+  margin-bottom: 1vh;
 }
 </style>
