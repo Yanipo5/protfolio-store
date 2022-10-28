@@ -65,6 +65,8 @@ const producs = productsStore.products;
 .image {
   width: 50vw;
   display: block;
+  min-width: 50vw;
+  object-fit: contain;
 }
 
 .content {
