@@ -56,4 +56,5 @@ enum OrderStatus {
   CREATED
   PROCESSING
   DELIVERED
+  CANCELED
 }

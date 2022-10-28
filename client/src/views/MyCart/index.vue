@@ -26,7 +26,6 @@
 <script lang="ts" setup>
 import useCartStore from "@/store/cart";
 import useUserStore from "@/store/user";
-import api from "@/utils/api";
 import PageHeader from "@/views/_components/PageHeader.vue";
 
 const cartStore = useCartStore();

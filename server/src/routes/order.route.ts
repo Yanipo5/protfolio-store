@@ -1,3 +1,4 @@
+import { OrderStatus } from "@prisma/client";
 import { createRouter } from "./context";
 import { prisma } from "../dbClient";
 import { z } from "zod";
@@ -6,7 +7,7 @@ export default createRouter()
   .query("getAll", {
     meta: { permission: "orders.getAll" },
     async resolve() {
-      return prisma.order.findMany();
+      return prisma.order.findMany({ include: { products: true } });
     }
   })
 
@@ -19,7 +20,7 @@ export default createRouter()
 
   .mutation("updateStatus", {
     meta: { permission: "order.complete" },
-    input: z.object({ id: z.string().cuid(), status: z.enum(["CREATED", "PROCESSING", "DELIVERED"]) }),
+    input: z.object({ id: z.string().cuid(), status: z.enum([OrderStatus.CANCELED, OrderStatus.CREATED, OrderStatus.DELIVERED, OrderStatus.PROCESSING]) }),
     async resolve(context) {
       const { id, status } = context.input;
       return prisma.order.update({ where: { id }, data: { status } });

@@ -1,14 +1,25 @@
-import type { Order } from "@prisma/client";
+import type { Order, ProductsOnOrder, OrderStatus } from "@prisma/client";
 import { defineStore } from "pinia";
+import api from "@/utils/api";
+import useUserStore from "@/store/user";
 
-const localStorageTokenKey = "orders";
+const userStore = useUserStore();
 
-const getDefulatDate = (): Order[] => [];
+const getDefulatDate = (): (Order & { products: ProductsOnOrder[] })[] => [];
 export default defineStore("orders", {
-  state: () => ({ ...getLocalhostData<Order[]>(localStorageTokenKey, getDefulatDate()) })
-});
+  state: () => ({ orders: getDefulatDate() }),
+  getters: {
+    getOrdersByStatus: (state) => (status: OrderStatus) => state.orders.filter((o) => o.status === status)
+  },
+  actions: {
+    async getOrders() {
+      this.orders = await api.query(userStore.roles.admin ? "order.getAll" : "order.getMyAll");
+    },
 
-function getLocalhostData<T>(key: string, defaultValue: T): T {
-  const raw = localStorage.getItem(key);
-  return raw ? JSON.parse(raw) : defaultValue;
-}
+    async updateOrderStatus(data: Pick<Order, "id" | "status">) {
+      if (!userStore.roles.admin) return;
+      await api.mutation("order.updateStatus", data);
+      this.orders = this.orders.map((o) => (o.id === data.id ? { ...o, status: data.status } : o));
+    }
+  }
+});

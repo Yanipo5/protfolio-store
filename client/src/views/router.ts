@@ -21,12 +21,12 @@ export default createRouter({
       component: () => import("./ProductManagement/index.vue"),
       meta: { roles: ["admin"], order: 100 }
     },
-    {
-      path: "/order-management",
-      name: "Order Management",
-      component: () => import("./OrderManagement/index.vue"),
-      meta: { roles: ["admin"], order: 110 }
-    },
+    // {
+    //   path: "/order-management",
+    //   name: "Order Management",
+    //   component: () => import("./OrderManagement/index.vue"),
+    //   meta: { roles: ["admin"], order: 110 }
+    // },
     {
       path: "/my-cart",
       name: "My Cart",
@@ -36,8 +36,8 @@ export default createRouter({
     {
       path: "/my-orders",
       name: "My Orders",
-      component: () => import("./UserPortal/index.vue"),
-      meta: { roles: ["user"], order: 210 }
+      component: () => import("./MyOrders/index.vue"),
+      meta: { roles: ["user", "admin"], order: 210 }
     }
   ].map((r) => ({ ...r, beforeEnter: [() => authorizeRole(r.meta.roles as Role[], useUserStore().roles) /* Authorize Navigation*/] }))
 });
