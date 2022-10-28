@@ -37,7 +37,13 @@ export default createRouter({
       path: "/my-orders",
       name: "My Orders",
       component: () => import("./MyOrders/index.vue"),
-      meta: { roles: ["user", "admin"], order: 210 }
+      meta: { roles: ["user"], order: 210 }
+    },
+    {
+      path: "/orders-management",
+      name: "Orders Management",
+      component: () => import("./MyOrders/index.vue"),
+      meta: { roles: ["admin"], order: 210 }
     }
   ].map((r) => ({ ...r, beforeEnter: [() => authorizeRole(r.meta.roles as Role[], useUserStore().roles) /* Authorize Navigation*/] }))
 });
