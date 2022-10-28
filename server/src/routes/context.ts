@@ -1,7 +1,7 @@
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { RoleMap, Permission } from "../utils/authorization";
 import { env } from "../envSchema";
-import * as trpcExpress from "@trpc/server/adapters/express";
+import type * as trpcExpress from "@trpc/server/adapters/express";
 import jwt from "jsonwebtoken";
 import * as trpc from "@trpc/server";
 

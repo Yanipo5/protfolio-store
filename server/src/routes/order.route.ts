@@ -27,6 +27,14 @@ export default createRouter()
     }
   })
 
+  .mutation("cancel", {
+    meta: { permission: "order.cancel" },
+    input: z.string().cuid(),
+    async resolve(context) {
+      return prisma.order.update({ where: { id: context.input }, data: { status: OrderStatus.CANCELED } });
+    }
+  })
+
   .mutation("create", {
     meta: { permission: "order.create" },
     input: z.array(z.object({ id: z.string().cuid(), quantity: z.number() })),

@@ -19,7 +19,7 @@ const cartNotEmpty = () => Object.values(store.products).some((v) => v);
 .dot {
   line-height: 18px;
 }
-.dot:deep .is-dot {
+.dot:deep(.is-dot) {
   bottom: 0px;
   left: 4px;
   right: unset;

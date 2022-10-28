@@ -7,9 +7,10 @@
         <div v-for="product in o.products" :key="product.productId">
           <span>{{ product }}</span>
         </div>
-        <el-button v-if="userStore.roles.user" @click="() => store.updateOrderStatus({ id: o.id, status: OrderStatus.CANCELED })">Cancel</el-button>
+        <!-- User Cancel Order -->
+        <el-button type="primary" v-if="userStore.roles.user" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
         <!-- Admin dropdown -->
-        <el-dropdown v-if="userStore.roles.admin">
+        <el-dropdown v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED">
           <el-button type="primary">
             {{ o.status }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
           </el-button>
@@ -32,6 +33,7 @@ import { OrderStatus } from "@prisma/client";
 import useOrdersStore from "@/store/orders";
 import useuserStore from "@/store/user";
 import PageHeader from "@/views/_components/PageHeader.vue";
+console.log(OrderStatus);
 
 const store = useOrdersStore();
 const userStore = useuserStore();

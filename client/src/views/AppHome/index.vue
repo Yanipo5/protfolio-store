@@ -31,7 +31,7 @@ const producs = productsStore.products;
 .card {
   margin: 1vh 0 0 0;
 }
-.card:deep() .el-card__body {
+.card:deep(.el-card__body) {
   padding: 1vh;
 }
 .product-wrapper {

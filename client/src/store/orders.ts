@@ -1,4 +1,4 @@
-import type { Order, ProductsOnOrder, OrderStatus } from "@prisma/client";
+import { type Order, type ProductsOnOrder, OrderStatus } from "@prisma/client";
 import { defineStore } from "pinia";
 import api from "@/utils/api";
 import useUserStore from "@/store/user";
@@ -20,6 +20,12 @@ export default defineStore("orders", {
       if (!userStore.roles.admin) return;
       await api.mutation("order.updateStatus", data);
       this.orders = this.orders.map((o) => (o.id === data.id ? { ...o, status: data.status } : o));
+    },
+
+    async cancelOrder(id: string) {
+      if (!userStore.roles.user) return;
+      await api.mutation("order.cancel", id);
+      this.orders = this.orders.map((o) => (o.id === id ? { ...o, status: OrderStatus.CANCELED } : o));
     }
   }
 });

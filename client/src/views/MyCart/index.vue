@@ -43,7 +43,7 @@ const buttonAction = () => {
 .card {
   margin-top: 1vh;
 }
-.card:deep .el-card__body {
+.card:deep(.el-card__body) {
   padding: 1vh;
   display: flex;
   flex-direction: row;
@@ -63,7 +63,7 @@ const buttonAction = () => {
   display: flex;
   justify-content: space-between;
 }
-.image:deep img {
+.image:deep(img) {
   width: 100%;
   height: 100%;
 }

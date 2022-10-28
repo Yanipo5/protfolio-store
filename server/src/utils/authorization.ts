@@ -14,6 +14,7 @@ export type Permission =
   | "orders.getAll"
   | "orders.getMyAll"
   | "order.create"
+  | "order.cancel"
   | "order.update"
   | "order.complete"
   | "order.delete";
@@ -34,6 +35,7 @@ export const permissionMap: Record<Permission, Role[]> = {
   "orders.getAll": ["admin"],
   "orders.getMyAll": ["user"],
   "order.create": ["user"],
+  "order.cancel": ["user"],
   "order.update": ["user"],
   "order.complete": ["admin"],
   "order.delete": ["user"]
