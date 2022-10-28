@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import { ShoppingCart } from "@element-plus/icons-vue";
 import useCartStore from "@/store/cart";
+import useUserStore from "@/store/user";
 
 const store = useCartStore();
+const userStore = useUserStore();
 const cartNotEmpty = () => Object.values(store.products).some((v) => v);
 </script>
 
 <template>
-  <el-menu-item index="2" style="padding: 0">
-    <el-badge v-if="cartNotEmpty()" is-dot class="dot"
-      ><el-icon> <ShoppingCart /></el-icon
+  <el-menu-item v-if="!userStore.roles.admin" index="2" style="padding: 0" class="app-shopping-cart">
+    <el-badge :is-dot="cartNotEmpty()" :class="cartNotEmpty() && 'dot'"
+      ><el-icon> <ShoppingCart @click="() => $router.push('/my-cart')" /></el-icon
     ></el-badge>
-    <el-icon v-else> <ShoppingCart /></el-icon>
   </el-menu-item>
 </template>
 
@@ -31,5 +32,8 @@ const cartNotEmpty = () => Object.values(store.products).some((v) => v);
   opacity: 1;
   border-bottom: 1px solid;
   border-bottom-color: var(--vt-c-white-mut) !important;
+}
+.app-shopping-cart {
+  border-bottom: unset !important;
 }
 </style>

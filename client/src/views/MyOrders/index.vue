@@ -12,7 +12,8 @@
         <!-- Admin dropdown -->
         <el-dropdown v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED">
           <el-button type="primary">
-            {{ o.status }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+            <span>{{ o.status }}</span>
+            <el-icon class="el-icon--right"><ArrowDown /></el-icon>
           </el-button>
 
           <template #dropdown>
@@ -30,6 +31,7 @@
 import { ref } from "vue";
 import type { Order, OrderStatus as OrderStatusType } from "@prisma/client";
 import { OrderStatus } from "@prisma/client";
+import { ArrowDown } from "@element-plus/icons-vue";
 import useOrdersStore from "@/store/orders";
 import useuserStore from "@/store/user";
 import PageHeader from "@/views/_components/PageHeader.vue";

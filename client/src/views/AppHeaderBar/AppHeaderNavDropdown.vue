@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { RouteWithMeta } from "@/utils/types";
 import { useRouter } from "vue-router";
+import { Menu } from "@element-plus/icons-vue";
 import useUserStore from "@/store/user";
 import { authorizeRole } from "portfolio-store-server/src/utils/authorization";
 const router = useRouter();
@@ -17,11 +18,17 @@ const handleClick = (r: { path: string }) => {
 </script>
 
 <template>
-  <el-sub-menu index="Navigation-DropDown">
-    <template #title>{{ $route.name }}</template>
+  <el-sub-menu index="Navigation-DropDown" class="app-navigation-dropDown">
+    <template #title
+      ><el-icon><Menu /></el-icon
+    ></template>
     <el-menu-item v-for="r in getMyRoutes()" :index="r.name" :key="r.path" @click="() => handleClick(r)">{{ r.name }}</el-menu-item>
   </el-sub-menu>
 </template>
 
 <style scoped></style>
-<style></style>
+<style>
+.app-navigation-dropDown .el-sub-menu__title {
+  border-bottom: unset !important;
+}
+</style>
