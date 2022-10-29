@@ -5,9 +5,16 @@
     <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os.toLowerCase() }} orders.</div>
     <el-collapse v-else v-model="activeName[os]" accordion>
       <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" :title="`Order: ${o.id}`" :name="i" :key="o.id">
-        <div v-for="product in o.products" :key="product.productId">
-          <span>{{ store.products.get(product.productId) }}</span>
+        <!-- Products in collapse area -->
+        <div v-for="product in o.products" :key="product.productId" class="product">
+          <img v-if="product.description?.image" :src="product.description.image" alt="" class="product-image" />
+          <div class="product-details">
+            <div>Quantity: {{ product.quantity }}</div>
+            <div v-if="product.description?.price">Price: {{ product.description.price }} $</div>
+            <div v-if="product.description?.price">Total Price: {{ (product.description.price * product.quantity).toFixed(2) }} $</div>
+          </div>
         </div>
+
         <!-- User Cancel Order -->
         <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
 
@@ -76,5 +83,20 @@ const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(Ord
 }
 .status-text {
   padding-right: 2vh;
+}
+.product {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin-bottom: 2vh;
+}
+.product-image {
+  flex: 50vw 0 0;
+  width: 50vw;
+  max-height: 15vh;
+  object-fit: contain;
+}
+.product-details {
+  margin-left: 2vh;
 }
 </style>
