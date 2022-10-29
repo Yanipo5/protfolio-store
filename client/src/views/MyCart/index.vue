@@ -27,15 +27,20 @@
 import useCartStore from "@/store/cart";
 import useUserStore from "@/store/user";
 import PageHeader from "@/views/_components/PageHeader.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const cartStore = useCartStore();
 const userStore = useUserStore();
 cartStore.getProductsDefinitions();
 
 const buttonTxt = () => (userStore.roles.viewer ? "Login" : "Order Now");
-const buttonAction = () => {
+const buttonAction = async () => {
   if (userStore.roles.viewer) userStore.loginDialogFormVisible = true;
-  else cartStore.orderCart();
+  else {
+    await cartStore.orderCart();
+    router.push("/my-orders");
+  }
 };
 </script>
 
