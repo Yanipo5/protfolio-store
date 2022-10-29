@@ -1,27 +1,32 @@
 <template>
   <PageHeader />
-  <div v-for="os in OrderStatus" :key="os" v-show="store.getOrdersByStatus(os).length">
-    <div class="subtitle">{{ os }}</div>
-    <el-collapse v-model="activeName[os]" accordion>
-      <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" title="Order" :name="i" :key="o.id">
+  <div v-for="os in OrderStatus" :key="os">
+    <div class="subtitle">{{ os.toLowerCase() }}</div>
+    <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os }} orders</div>
+    <el-collapse v-else v-model="activeName[os]" accordion>
+      <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" :title="`Order: ${o.id}`" :name="i" :key="o.id">
         <div v-for="product in o.products" :key="product.productId">
           <span>{{ product }}</span>
         </div>
         <!-- User Cancel Order -->
         <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
-        <!-- Admin dropdown -->
-        <el-dropdown v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED">
-          <el-button type="primary">
-            <span>{{ o.status }}</span>
-            <el-icon class="el-icon--right"><ArrowDown /></el-icon>
-          </el-button>
 
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item v-for="status in getDropDownListValues(o)" :key="status" @click="() => store.updateOrderStatus({ id: o.id, status })">{{ status }} </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+        <!-- Admin dropdown -->
+        <div v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED" class="admin-dropdown">
+          <span class="status-text">Status: </span>
+          <el-dropdown>
+            <el-button type="primary">
+              <span>{{ o.status }}</span>
+              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </el-button>
+
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item v-for="status in getDropDownListValues(o)" :key="status" @click="() => store.updateOrderStatus({ id: o.id, status })">{{ status }} </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -49,14 +54,27 @@ const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(Ord
 <style scoped>
 .subtitle {
   padding: 2vh;
+  text-transform: capitalize;
 }
 
 .el-collapse-item:deep(.el-collapse-item__header),
 .el-collapse-item:deep(.el-collapse-item__content) {
   padding-left: 2vh;
 }
+.no-orders {
+  padding-left: 4vh;
+}
 
 .el-collapse-item:deep(.el-collapse-item__content) {
   padding-bottom: 2vh;
+}
+.admin-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 2vh;
+}
+.status-text {
+  padding-right: 2vh;
 }
 </style>
