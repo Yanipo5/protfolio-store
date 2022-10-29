@@ -11,7 +11,10 @@ export default defineStore("orders", {
   state: () => ({ orders: getDefualtOrders(), products: getDefualtProducts() }),
   getters: {
     getOrdersByStatus: (state) => (status: OrderStatus) =>
-      state.orders.filter((o) => o.status === status).map((o) => ({ ...o, products: o.products.map((p) => ({ ...p, description: state.products.get(p.productId) })) }))
+      state.orders
+        .filter((o) => o.status === status)
+        .map((o) => ({ ...o, products: o.products.map((p) => ({ ...p, itemTotalPrice: (state.products.get(p.productId)?.price || 0) * p.quantity, description: state.products.get(p.productId) })) }))
+        .map((o) => ({ ...o, totalPrice: o.products.reduce((sum, p) => sum + p.itemTotalPrice, 0) }))
   },
   actions: {
     async getOrders() {

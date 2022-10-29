@@ -10,10 +10,11 @@
           <img v-if="product.description?.image" :src="product.description.image" alt="" class="product-image" />
           <div class="product-details">
             <div>Quantity: {{ product.quantity }}</div>
-            <div v-if="product.description?.price">Price: {{ product.description.price }} $</div>
-            <div v-if="product.description?.price">Total Price: {{ (product.description.price * product.quantity).toFixed(2) }} $</div>
+            <div v-if="product.description?.price">Item Price: {{ product.description.price }} $</div>
+            <div v-if="product?.itemTotalPrice">Total Item Price: {{ product.itemTotalPrice.toFixed(2) }} $</div>
           </div>
         </div>
+        <div class="order-totals">Total Order Price: {{ o.totalPrice.toFixed(2) }} $</div>
 
         <!-- User Cancel Order -->
         <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
@@ -98,5 +99,10 @@ const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(Ord
 }
 .product-details {
   margin-left: 2vh;
+}
+
+.order-totals {
+  text-align: end;
+  margin-right: 2vh;
 }
 </style>
