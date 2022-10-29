@@ -1,19 +1,25 @@
-import { type Order, type ProductsOnOrder, OrderStatus } from "@prisma/client";
+import { type Product, type Order, type ProductsOnOrder, OrderStatus } from "@prisma/client";
 import { defineStore } from "pinia";
 import api from "@/utils/api";
 import useUserStore from "@/store/user";
 
 const userStore = useUserStore();
 
-const getDefulatDate = (): (Order & { products: ProductsOnOrder[] })[] => [];
+const getDefualtOrders = (): (Order & { products: ProductsOnOrder[] })[] => [];
+const getDefualtProducts = (): Map<string, Product> => new Map();
 export default defineStore("orders", {
-  state: () => ({ orders: getDefulatDate() }),
+  state: () => ({ orders: getDefualtOrders(), products: getDefualtProducts() }),
   getters: {
     getOrdersByStatus: (state) => (status: OrderStatus) => state.orders.filter((o) => o.status === status)
   },
   actions: {
     async getOrders() {
       this.orders = await api.query(userStore.roles.admin ? "order.getAll" : "order.getMyAll");
+      // Get products from orders
+      const set = new Set<string>();
+      this.orders.forEach((o) => o.products.forEach((p) => set.add(p.productId)));
+      const products = await api.query("product.getByIds", Array.from(set));
+      products.forEach((p) => this.products.set(p.id, p));
     },
 
     async updateOrderStatus(data: Pick<Order, "id" | "status">) {

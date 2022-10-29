@@ -2,11 +2,11 @@
   <PageHeader />
   <div v-for="os in OrderStatus" :key="os">
     <div class="subtitle">{{ os.toLowerCase() }}</div>
-    <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os }} orders</div>
+    <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os.toLowerCase() }} orders.</div>
     <el-collapse v-else v-model="activeName[os]" accordion>
       <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" :title="`Order: ${o.id}`" :name="i" :key="o.id">
         <div v-for="product in o.products" :key="product.productId">
-          <span>{{ product }}</span>
+          <span>{{ store.products.get(product.productId) }}</span>
         </div>
         <!-- User Cancel Order -->
         <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
@@ -48,7 +48,7 @@ store.getOrders();
 type OrdersCollapseState = { [key in OrderStatusType]: number };
 const activeName = ref<OrdersCollapseState>(Object.entries(OrderStatus).reduce((o, [key, value]) => ({ ...o, [key]: null }), {} as OrdersCollapseState));
 
-const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(OrderStatus).filter((v) => v !== o.status && v !== "CREATED");
+const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(OrderStatus).filter((v) => v !== o.status && v !== "CREATED" && v !== "CANCELED");
 </script>
 
 <style scoped>
