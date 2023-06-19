@@ -3,8 +3,10 @@
     <el-col v-for="(p, i) in productsStore.products" :key="p.id">
       <el-card class="card">
         <div class="product-wrapper">
+          <!-- Image -->
           <img v-if="p.image" :src="p.image" class="image" />
           <img v-else src="@/assets/no_image.jpg" class="image" />
+          <!-- Content -->
           <div class="content">
             <div class="title">{{ p.title }}</div>
             <div class="description">{{ p.description }}</div>
@@ -39,7 +41,7 @@ const producs = productsStore.products;
 .product-wrapper {
   display: flex;
   /* height: calc(33vh - 58px); */
-  height: calc((100vh - 20vh - 58px) / 3); /* Make 3 items fully visiable in mobile */
+  height: calc((100% - 20% - 58px) / 3); /* Make 3 items fully visiable in mobile */
 }
 
 .title {
@@ -65,10 +67,10 @@ const producs = productsStore.products;
 }
 
 .image {
-  width: 50vw;
   display: block;
-  min-width: 50vw;
+  width: 50%;
   object-fit: contain;
+  height: 200px;
 }
 
 .content {
