@@ -36,3 +36,4 @@ server/build/
 
 
 google-cloud-service-account.json
+.secrets
