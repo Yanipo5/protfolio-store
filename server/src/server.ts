@@ -15,7 +15,17 @@ const app = express();
 
 app.use(cookieParser());
 
-app.use("/trpc", trpcExpress.createExpressMiddleware({ router: appRouter, createContext }));
+app.use(
+  "/trpc",
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext,
+    onError: (e) => {
+      // console.error(`Path: ${e.path}\nQuery: ${JSON.stringify(e.ctx?.req.query)}\n${e.error.stack}`);
+      console.error(e);
+    }
+  })
+);
 
 app.use(express.static(path.resolve(__dirname, "../../client/dist")));
 

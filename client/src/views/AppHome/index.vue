@@ -10,7 +10,7 @@
             <div class="description">{{ p.description }}</div>
             <div class="price">{{ p.price }} $</div>
             <div style="flex-grow: 1" />
-            <el-button type="primary" size="large" class="button" @click="() => cartStore.addToCart(p)">Add To Cart</el-button>
+            <el-button :disabled="userStore.roles.admin" type="primary" size="large" class="button" @click="() => cartStore.addToCart(p)">Add To Cart</el-button>
           </div>
         </div>
       </el-card>
@@ -20,8 +20,10 @@
 <script lang="ts" setup>
 import useProductsStore from "@/store/products";
 import useCartStore from "@/store/cart";
+import useUserStore from "@/store/user";
 
 const cartStore = useCartStore();
+const userStore = useUserStore();
 const productsStore = useProductsStore();
 productsStore.getProducts();
 const producs = productsStore.products;
@@ -29,15 +31,15 @@ const producs = productsStore.products;
 
 <style scoped>
 .card {
-  margin: 1vh 0 0 0;
+  margin: 2vh 0 0 0;
 }
 .card:deep(.el-card__body) {
-  padding: 1vh;
+  padding: 2vh;
 }
 .product-wrapper {
   display: flex;
   /* height: calc(33vh - 58px); */
-  height: calc((100vh - 10vh - 58px) / 3);
+  height: calc((100vh - 20vh - 58px) / 3); /* Make 3 items fully visiable in mobile */
 }
 
 .title {
