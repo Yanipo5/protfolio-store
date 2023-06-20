@@ -21,8 +21,11 @@ app.use(
     router: appRouter,
     createContext,
     onError: (e) => {
-      // console.error(`Path: ${e.path}\nQuery: ${JSON.stringify(e.ctx?.req.query)}\n${e.error.stack}`);
-      console.error(e);
+      console.error(`
+        Path: ${e.path} - Error:${e.error.message}
+        Query: ${e.ctx?.req?.query}
+        Stack: ${e.error.stack}
+      `);
     }
   })
 );

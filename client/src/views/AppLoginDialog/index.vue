@@ -9,20 +9,33 @@ const formLabelWidth = "80px";
 
 const form = reactive({
   email: "",
-  password: ""
+  password: "",
+  error: ""
 });
 
 async function handleSignUp() {
-  const res = await api.mutation("user.signUp", form);
-  store.saveToken(res);
-  store.loginDialogFormVisible = false;
+  try {
+    const res = await api.mutation("user.signUp", form);
+    store.saveToken(res);
+    store.loginDialogFormVisible = false;
+    form.error = "";
+  } catch (_error) {
+    const error = _error as unknown as { message: string };
+    form.error = error?.message;
+  }
 }
 
 async function handleLogin() {
   const client = basicAuthClient(form);
-  const res = await client.query("user.login");
-  store.saveToken(res);
-  store.loginDialogFormVisible = false;
+  try {
+    const res = await client.query("user.login");
+    store.saveToken(res);
+    store.loginDialogFormVisible = false;
+    form.error = "";
+  } catch (_error) {
+    const error = _error as unknown as { message: string };
+    form.error = error?.message;
+  }
 }
 
 async function handleDialogClose() {
@@ -39,11 +52,12 @@ const getTitle = () => {
   <el-dialog v-model="store.loginDialogFormVisible" :title="getTitle()" class="app-header-login-dialog" @closed="handleDialogClose">
     <el-form :model="form">
       <el-form-item label="User" :label-width="formLabelWidth">
-        <el-input v-model="form.email" autocomplete="off" placeholder="Username | Email" />
+        <el-input v-model="form.email" autocomplete="off" placeholder="Username | Email" @input="() => (form.error = '')" />
       </el-form-item>
       <el-form-item label="Password" :label-width="formLabelWidth">
-        <el-input v-model="form.password" autocomplete="off" type="password" placeholder="Password" show-password />
+        <el-input v-model="form.password" autocomplete="off" type="password" placeholder="Password" show-password @input="() => (form.error = '')" />
       </el-form-item>
+      <div class="error">{{ form.error }}</div>
     </el-form>
 
     <template #footer>
@@ -64,9 +78,6 @@ const getTitle = () => {
 
 <style scoped></style>
 <style>
-.app-header-login-dialog {
-  width: 100%;
-}
 .app-header-login-dialog .el-dialog__header {
   padding-bottom: 0;
 }
@@ -79,5 +90,10 @@ const getTitle = () => {
 .app-header-login-dialog .login-mode-switch {
   color: var(--el-color-primary);
   text-decoration: underline;
+}
+
+.app-header-login-dialog .error {
+  color: red;
+  text-align: right;
 }
 </style>
