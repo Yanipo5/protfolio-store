@@ -1,42 +1,44 @@
 <template>
-  <PageHeader />
-  <div v-for="os in OrderStatus" :key="os">
-    <div class="subtitle">{{ os.toLowerCase() }}</div>
-    <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os.toLowerCase() }} orders.</div>
-    <el-collapse v-else v-model="activeName[os]" accordion>
-      <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" :title="`Order: ${o.id}`" :name="i" :key="o.id">
-        <!-- Products in collapse area -->
-        <div v-for="product in o.products" :key="product.productId" class="product">
-          <img v-if="product.description?.image" :src="product.description.image" alt="" class="product-image" />
-          <div class="product-details">
-            <div>Quantity: {{ product.quantity }}</div>
-            <div v-if="product.description?.price">Item Price: {{ product.description.price }} $</div>
-            <div v-if="product?.itemTotalPrice">Total Item Price: {{ product.itemTotalPrice.toFixed(2) }} $</div>
+  <div class="wrapper">
+    <PageHeader />
+    <div v-for="os in OrderStatus" :key="os">
+      <div class="subtitle">{{ os.toLowerCase() }}</div>
+      <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os.toLowerCase() }} orders.</div>
+      <el-collapse v-else v-model="activeName[os]" accordion>
+        <el-collapse-item v-for="(o, i) in store.getOrdersByStatus(os)" :title="`Order: ${o.id}`" :name="i" :key="o.id">
+          <!-- Products in collapse area -->
+          <div v-for="product in o.products" :key="product.productId" class="product">
+            <img v-if="product.description?.image" :src="product.description.image" alt="" class="product-image" />
+            <div class="product-details">
+              <div>Quantity: {{ product.quantity }}</div>
+              <div v-if="product.description?.price">Item Price: {{ product.description.price }} $</div>
+              <div v-if="product?.itemTotalPrice">Total Item Price: {{ product.itemTotalPrice.toFixed(2) }} $</div>
+            </div>
           </div>
-        </div>
-        <div class="order-totals">Total Order Price: {{ o.totalPrice.toFixed(2) }} $</div>
+          <div class="order-totals">Total Order Price: {{ o.totalPrice.toFixed(2) }} $</div>
 
-        <!-- User Cancel Order -->
-        <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
+          <!-- User Cancel Order -->
+          <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
 
-        <!-- Admin dropdown -->
-        <div v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED" class="admin-dropdown">
-          <span class="status-text">Status: </span>
-          <el-dropdown>
-            <el-button type="primary">
-              <span>{{ o.status }}</span>
-              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
-            </el-button>
+          <!-- Admin dropdown -->
+          <div v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED" class="admin-dropdown">
+            <span class="status-text">Status: </span>
+            <el-dropdown>
+              <el-button type="primary">
+                <span>{{ o.status }}</span>
+                <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+              </el-button>
 
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-for="status in getDropDownListValues(o)" :key="status" @click="() => store.updateOrderStatus({ id: o.id, status })">{{ status }} </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-      </el-collapse-item>
-    </el-collapse>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="status in getDropDownListValues(o)" :key="status" @click="() => store.updateOrderStatus({ id: o.id, status })">{{ status }} </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
   </div>
 </template>
 
@@ -104,5 +106,11 @@ const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(Ord
 .order-totals {
   text-align: end;
   margin-right: 2vh;
+}
+.wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: 100%;
 }
 </style>

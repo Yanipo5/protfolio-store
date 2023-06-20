@@ -10,13 +10,17 @@ const getShow = (key: string) => key !== "id";
 </script>
 
 <template>
-  <!-- Header -->
-  <PageHeader />
+  <div class="wrapper">
+    <!-- Header -->
+    <PageHeader />
 
-  <!-- Add Product -->
-  <span class="success-button">
-    <el-button type="primary" @click="store.openProductDialogCreate" size="large">Add Product</el-button>
-  </span>
+    <!-- Add Product -->
+    <span class="success-button">
+      <el-button type="primary" @click="store.openProductDialogCreate" size="large">Add Product</el-button>
+    </span>
+    <!-- Products Table -->
+    <ProductsTable />
+  </div>
 
   <!-- Add Product Dialog -->
   <el-dialog v-model="store.dialogFormVisible" title="Add Product" class="add-product-dialog">
@@ -34,9 +38,6 @@ const getShow = (key: string) => key !== "id";
       </span>
     </template>
   </el-dialog>
-
-  <!-- Products Table -->
-  <ProductsTable />
 </template>
 
 <style scoped>
@@ -50,13 +51,12 @@ const getShow = (key: string) => key !== "id";
 .form-label {
   text-transform: capitalize;
 }
-</style>
 
-<style>
-.add-product-dialog {
-  margin-left: 0;
-  margin-right: 0;
-  width: 100vw;
+.wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: 100%;
 }
 </style>
 

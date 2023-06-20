@@ -10,8 +10,8 @@
       <div class="title">{{ p.title }}</div>
       <el-input-number v-model="p.quantity" :min="0" :max="5" @change="(value: number) => cartStore.updateProductQuantity(p.id,value)" />
       <div class="prices">
-        <div>each {{ p.price }} $</div>
-        <div>total {{ p.totalPrice.toFixed(2) }} $</div>
+        <div>Each {{ p.price }} $</div>
+        <div>Total {{ p.totalPrice.toFixed(2) }} $</div>
       </div>
     </div>
   </el-card>
@@ -65,8 +65,10 @@ const buttonAction = async () => {
 }
 .prices {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
+  font-size: 12px;
+  text-align: right;
+  margin-right: 1vh;
+  padding-right: 1vh;
 }
 .image:deep(img) {
   width: 100%;

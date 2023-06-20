@@ -22,11 +22,12 @@ const store = useUserStore();
 </template>
 
 <style>
-.flex-grow {
-  flex-grow: 100;
-}
 .app-header {
   align-items: center;
   padding: 0px;
+  width: 100%;
+}
+.flex-grow {
+  flex-grow: 100;
 }
 </style>

@@ -8,8 +8,6 @@ body,
 }
 body {
   margin: auto;
-  display: flex;
-  place-items: center;
 }
 
 a,

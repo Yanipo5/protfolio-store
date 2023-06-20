@@ -1,23 +1,21 @@
 <template>
-  <el-row>
-    <el-col v-for="(p, i) in productsStore.products" :key="p.id">
-      <el-card class="card">
-        <div class="product-wrapper">
-          <!-- Image -->
-          <img v-if="p.image" :src="p.image" class="image" />
-          <img v-else src="@/assets/no_image.jpg" class="image" />
-          <!-- Content -->
-          <div class="content">
-            <div class="title">{{ p.title }}</div>
-            <div class="description">{{ p.description }}</div>
-            <div class="price">{{ p.price }} $</div>
-            <div style="flex-grow: 1" />
-            <el-button :disabled="userStore.roles.admin" type="primary" size="large" class="button" @click="() => cartStore.addToCart(p)">Add To Cart</el-button>
-          </div>
+  <div class="wrapper">
+    <el-card class="card" v-for="(p, i) in productsStore.products" :key="p.id">
+      <div class="product-wrapper">
+        <!-- Image -->
+        <img v-if="p.image" :src="p.image" class="image" />
+        <img v-else src="@/assets/no_image.jpg" class="image" />
+        <!-- Content -->
+        <div class="content">
+          <div class="title">{{ p.title }}</div>
+          <div class="description">{{ p.description }}</div>
+          <div class="price">{{ p.price }} $</div>
+          <div style="flex-grow: 1" />
+          <el-button :disabled="userStore.roles.admin" type="primary" size="large" class="button" @click="() => cartStore.addToCart(p)">Add To Cart</el-button>
         </div>
-      </el-card>
-    </el-col>
-  </el-row>
+      </div>
+    </el-card>
+  </div>
 </template>
 <script lang="ts" setup>
 import useProductsStore from "@/store/products";
