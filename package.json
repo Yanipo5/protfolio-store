@@ -1,7 +1,7 @@
 {
   "name": "portfolio-store",
   "description": "Full stack template based in (server) prisma + trpc and (client) vue + pinia + element-plus",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "author": "Yaniv Peretz",
   "license": "MIT",
   "workspaces": [
