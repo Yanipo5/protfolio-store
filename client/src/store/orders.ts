@@ -1,4 +1,4 @@
-import { type Product, type Order, type ProductsOnOrder, OrderStatus } from "@prisma/client";
+import type { Product, Order, ProductsOnOrder } from "@prisma/client";
 import { defineStore } from "pinia";
 import api from "@/utils/api";
 import useUserStore from "@/store/user";
@@ -10,7 +10,7 @@ const getDefualtProducts = (): Map<string, Product> => new Map();
 export default defineStore("orders", {
   state: () => ({ orders: getDefualtOrders(), products: getDefualtProducts() }),
   getters: {
-    getOrdersByStatus: (state) => (status: OrderStatus) =>
+    getOrdersByStatus: (state) => (status: Order["status"]) =>
       state.orders
         .filter((o) => o.status === status)
         .map((o) => ({ ...o, products: o.products.map((p) => ({ ...p, itemTotalPrice: (state.products.get(p.productId)?.price || 0) * p.quantity, description: state.products.get(p.productId) })) }))
@@ -25,17 +25,15 @@ export default defineStore("orders", {
       const products = await api.query("product.getByIds", Array.from(set));
       products.forEach((p) => this.products.set(p.id, p));
     },
-
     async updateOrderStatus(data: Pick<Order, "id" | "status">) {
       if (!userStore.roles.admin) return;
       await api.mutation("order.updateStatus", data);
       this.orders = this.orders.map((o) => (o.id === data.id ? { ...o, status: data.status } : o));
     },
-
     async cancelOrder(id: string) {
       if (!userStore.roles.user) return;
       await api.mutation("order.cancel", id);
-      this.orders = this.orders.map((o) => (o.id === id ? { ...o, status: OrderStatus.CANCELED } : o));
+      this.orders = this.orders.map((o) => (o.id === id ? { ...o, status: "CANCELED" } : o));
     }
   }
 });
