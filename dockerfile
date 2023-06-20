@@ -6,6 +6,7 @@ WORKDIR /app
 # Prepare
 COPY . ./
 RUN npm ci --workspaces
+RUN npm run build --workspaces
 # Note: prisma generate would run as part of the postinstall
 EXPOSE 8080
 
