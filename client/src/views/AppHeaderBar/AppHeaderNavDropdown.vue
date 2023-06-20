@@ -3,7 +3,7 @@
     <template #title
       ><el-icon><Menu /></el-icon
     ></template>
-    <el-menu-item v-for="r in getMyRoutes()" :index="r.name" :key="r.path" @click="() => handleClick(r)">{{ r.name }}</el-menu-item>
+    <el-menu-item v-for="r in getMyRoutes()" :index="r.name" :key="r.path" @click="() => router.push(r.path)">{{ r.name }}</el-menu-item>
   </el-sub-menu>
 </template>
 
@@ -21,9 +21,6 @@ const getMyRoutes = () => {
   return routes.filter((r) => authorizeRole(r.meta.roles, store.roles)).sort((a, b) => a.meta.order - b.meta.order);
 };
 
-const handleClick = (r: { path: string }) => {
-  router.push(r.path);
-};
 </script>
 
 <style>

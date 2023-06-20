@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <PageHeader />
-    <div v-for="os in OrderStatus" :key="os">
+    <div v-for="os in orderStatuses" :key="os">
       <div class="subtitle">{{ os.toLowerCase() }}</div>
       <div class="no-orders" v-if="!store.getOrdersByStatus(os).length">There are no {{ os.toLowerCase() }} orders.</div>
       <el-collapse v-else v-model="activeName[os]" accordion>
@@ -18,10 +18,10 @@
           <div class="order-totals">Total Order Price: {{ o.totalPrice.toFixed(2) }} $</div>
 
           <!-- User Cancel Order -->
-          <el-button type="primary" v-if="userStore.roles.user && o.status !== OrderStatus.CANCELED" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
+          <el-button type="primary" v-if="userStore.roles.user && o.status !== 'CANCELED'" @click="() => store.cancelOrder(o.id)">Cancel</el-button>
 
           <!-- Admin dropdown -->
-          <div v-if="userStore.roles.admin && o.status !== OrderStatus.CANCELED" class="admin-dropdown">
+          <div v-if="userStore.roles.admin && o.status !== 'CANCELED'" class="admin-dropdown">
             <span class="status-text">Status: </span>
             <el-dropdown>
               <el-button type="primary">
@@ -44,21 +44,27 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { Order, OrderStatus as OrderStatusType } from "@prisma/client";
-import { OrderStatus } from "@prisma/client";
+import type { Order } from "@prisma/client";
 import { ArrowDown } from "@element-plus/icons-vue";
 import useOrdersStore from "@/store/orders";
-import useuserStore from "@/store/user";
+import useUserStore from "@/store/user";
 import PageHeader from "@/views/_components/PageHeader.vue";
 
 const store = useOrdersStore();
-const userStore = useuserStore();
+const userStore = useUserStore();
 store.getOrders();
 
-type OrdersCollapseState = { [key in OrderStatusType]: number };
-const activeName = ref<OrdersCollapseState>(Object.entries(OrderStatus).reduce((o, [key, value]) => ({ ...o, [key]: null }), {} as OrdersCollapseState));
+type OrderStatus = Order["status"];
+type OrdersCollapseState = { [key in OrderStatus]: number };
+const orderStatuses: Record<OrderStatus, OrderStatus> = {
+  CREATED: "CREATED",
+  PROCESSING: "PROCESSING",
+  DELIVERED: "DELIVERED",
+  CANCELED: "CANCELED"
+};
+const activeName = ref<OrdersCollapseState>(Object.entries(orderStatuses).reduce((o, [key, value]) => ({ ...o, [key]: null }), {} as OrdersCollapseState));
 
-const getDropDownListValues = (o: Order): OrderStatusType[] => Object.values(OrderStatus).filter((v) => v !== o.status && v !== "CREATED" && v !== "CANCELED");
+const getDropDownListValues = (o: Order): OrderStatus[] => Object.values(orderStatuses).filter((v) => v !== o.status && v !== "CREATED" && v !== "CANCELED");
 </script>
 
 <style scoped>

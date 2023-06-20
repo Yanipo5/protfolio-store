@@ -4,10 +4,10 @@
   "author": "Yaniv Peretz",
   "scripts": {
     "dev": "vite",
-    "dev--force": "vite --force ",
-    "build": "run-p type-check build-only",
+    "build": "vite build",
+    "dev--force": "vite --force",
     "preview": "vite preview --port 4173",
-    "build-only": "vite build",
+    "build-preview": "vite build && vite preview --port 4173",
     "type-check": "vue-tsc --noEmit",
     "_____TEST_____": "",
     "test": "npx jest",
